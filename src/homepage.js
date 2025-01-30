@@ -4,15 +4,29 @@ export default function homePage() {
     taskBar();
     header();
     taskList();
+    window.addEventListener('resize', adjustAddTaskDivWidth);
 }
 
 function taskBar() {
     const main = document.querySelector('#main');
+    const addtaskDiv = document.createElement('div');
+    addtaskDiv.classList.add('add-task-div');
     const addTask = document.createElement('input');
     addTask.type = 'text';
     addTask.id = 'add-task';
     addTask.placeholder = 'Add a task';
-    main.appendChild(addTask);
+    addtaskDiv.style.width = (main.clientWidth * 0.885) + 'px';
+    addTask.style.width = '100%';
+    addtaskDiv.appendChild(addTask);
+    main.appendChild(addtaskDiv);
+}
+
+function adjustAddTaskDivWidth() {
+    const main = document.querySelector('#main');
+    const addtaskDiv = document.querySelector('.add-task-div');
+    const addTask = document.querySelector('#add-task');
+    addtaskDiv.style.width = (main.clientWidth * 0.9) + 'px';
+    addTask.style.width = '100%';
 }
 
 function taskList() {
