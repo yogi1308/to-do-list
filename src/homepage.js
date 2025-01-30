@@ -35,8 +35,15 @@ function taskList() {
     taskList.classList.add('task-list');
     tasksData.forEach(task => {
         const taskItem = document.createElement('div');
+        const taskItemName = document.createElement('p');
+        const taskItemGroup = document.createElement('p');
+        taskItemGroup.classList.add('task-item-group');
+        taskItemName.classList.add('task-item-name')
         taskItem.classList.add('task-item');
-        taskItem.textContent = task.task;
+        taskItemName.textContent = task.task;
+        taskItemGroup.textContent = task.group;
+        taskItem.appendChild(taskItemName);
+        taskItem.appendChild(taskItemGroup);
         taskList.appendChild(taskItem);
     });
     main.appendChild(taskList);

@@ -65,7 +65,7 @@
 #main {
     background-color: #1c1c1c;
     color: #788cde;
-    font-size: 1.1em;
+    font-size: 1em;
     padding: 20px 5%;
     position: relative; 
     display: flex;
@@ -112,13 +112,46 @@ input::placeholder {
   color: white;
   padding: 5px 10px;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .header p {
   font-size: 0.8em;
 }
 
+.task-item-name {
+  line-height: 1.25;
+}
+
+.task-item-group {
+  color: gray;
+  font-size: 0.7em;
+  padding: 0;
+  line-height: 1.25;
+}
 
 
 
+/* Entire scrollbar container */
+::-webkit-scrollbar {
+    width: 8px; /* Adjust width for vertical scrollbars */
+    height: 8px; /* Adjust height for horizontal scrollbars */
+}
 
+/* Scrollbar track (background) */
+::-webkit-scrollbar-track {
+    background: #1e1e1e; /* Dark background */
+}
+
+/* Scrollbar thumb (draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #444; /* Dark gray thumb */
+    border-radius: 10px; /* Rounded thumb */
+}
+
+/* Hover effect on the scrollbar thumb */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Slightly lighter gray on hover */
+}
