@@ -2,6 +2,7 @@ import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
+import { tasks, tasksData } from './tasks-data.js';
 export default function sidebar() {
     const sidebar = document.querySelector('#sidebar');
     const sidebarList = document.createElement('div');
@@ -37,6 +38,7 @@ function sidebarItems() {
         sidebarItemDiv.appendChild(sidebarItemName);
         sidebarList.appendChild(sidebarItemDiv);
         sidebarItemDiv.addEventListener('click', () => {
+            const taskList = document.querySelector('.task-list');taskList.textContent = '';
             chooseDisplay(item.name);
         });
     });
@@ -45,7 +47,7 @@ function sidebarItems() {
 
 function chooseDisplay(item) {
     if (item == 'My Day') {}
-    else if (item == 'Important') {taskList(item);}
+    else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});}
     else if (item == 'Planned') {}
     else if (item == 'Tasks') {}
     else if (item == 'Completed') {}
@@ -53,26 +55,20 @@ function chooseDisplay(item) {
 }
 
 
-function taskList(item) {
+function displayTask(task) {
     const main = document.querySelector('#main');
-    const taskList = document.createElement('div');
-    taskList.classList.add('task-list');
-    tasksData.forEach(task => {
-        if (task.important) {
-            displayTask(task, taskList);
-        }
-        const taskItem = document.createElement('div');
-        const taskItemName = document.createElement('p');
-        const taskItemGroup = document.createElement('p');
-        taskItemGroup.classList.add('task-item-group');
-        taskItemName.classList.add('task-item-name')
-        taskItem.classList.add('task-item');
-        taskItemName.textContent = task.task;
-        taskItemGroup.textContent = task.group;
-        taskItem.appendChild(taskItemName);
-        taskItem.appendChild(taskItemGroup);
-        taskList.appendChild(taskItem);
-    });
+    const taskList = document.querySelector('.task-list');
+    const taskItem = document.createElement('div');
+    const taskItemName = document.createElement('p');
+    const taskItemGroup = document.createElement('p');
+    taskItemGroup.classList.add('task-item-group');
+    taskItemName.classList.add('task-item-name')
+    taskItem.classList.add('task-item');
+    taskItemName.textContent = task.task;
+    taskItemGroup.textContent = task.group;
+    taskItem.appendChild(taskItemName);
+    taskItem.appendChild(taskItemGroup);
+    taskList.appendChild(taskItem);
     main.appendChild(taskList);
 }
 
