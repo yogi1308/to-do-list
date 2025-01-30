@@ -30,7 +30,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
       "2025-01-31",
       "No",
       true,
-      false
+      true
     ),
     tasks(
       "Team meeting",

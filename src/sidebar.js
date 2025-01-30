@@ -48,10 +48,8 @@ function sidebarItems() {
 function chooseDisplay(item) {
     if (item == 'My Day') {}
     else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});}
-    else if (item == 'Planned') {}
-    else if (item == 'Tasks') {}
-    else if (item == 'Completed') {}
-    else if (item == 'All') {}
+    else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});}
+    else if (item == 'All') {tasksData.forEach(task => {displayTask(task);});}
 }
 
 
