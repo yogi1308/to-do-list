@@ -3,6 +3,7 @@ import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
 import { tasks, tasksData } from './tasks-data.js';
+
 export default function sidebar() {
     const sidebar = document.querySelector('#sidebar');
     const sidebarList = document.createElement('div');

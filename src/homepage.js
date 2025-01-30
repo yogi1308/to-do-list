@@ -3,7 +3,7 @@ export default function homePage() {
     console.log('home page');
     taskBar();
     header();
-    taskList();
+    displayTaskList();
     window.addEventListener('resize', adjustAddTaskDivWidth);
 }
 
@@ -19,6 +19,7 @@ function taskBar() {
     addTask.style.width = '100%';
     addtaskDiv.appendChild(addTask);
     main.appendChild(addtaskDiv);
+    addTask.addEventListener('keyup', (e) => {if (e.key === 'Enter') {addTaskFunction(addTask.textContent);}});
 }
 
 function adjustAddTaskDivWidth() {
@@ -29,7 +30,7 @@ function adjustAddTaskDivWidth() {
     addTask.style.width = '100%';
 }
 
-function taskList() {
+function displayTaskList() {
     const main = document.querySelector('#main');
     const taskList = document.createElement('div');
     taskList.classList.add('task-list');
@@ -55,4 +56,15 @@ function header() {
     header.classList.add('header');
     header.innerHTML = '<h2>My Day</h2><p>Wedneseday, 29 January<p>';
     main.appendChild(header);
+}
+
+function addTaskFunction(taskName) {
+    const addTask = document.querySelector('#add-task');
+    tasksData.push(tasks(addTask.value));
+    addTask.value = taskName;
+    const taskList = document.querySelector('.task-list');
+    const main = document.querySelector('#main');
+    main.removeChild(taskList);
+    displayTaskList();
+    console.log(tasksData);
 }
