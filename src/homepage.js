@@ -15,7 +15,7 @@ function taskBar() {
     addTask.type = 'text';
     addTask.id = 'add-task';
     addTask.placeholder = 'Add a task';
-    addtaskDiv.style.width = (main.clientWidth * 0.885) + 'px';
+    addtaskDiv.style.width = (main.clientWidth * 0.9) + 'px';
     addTask.style.width = '100%';
     addtaskDiv.appendChild(addTask);
     main.appendChild(addtaskDiv);

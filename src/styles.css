@@ -136,7 +136,7 @@ input::placeholder {
 .sidebar-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 15px;
   padding: 10px;
   padding-top: 30px;
   color: white;
@@ -148,6 +148,12 @@ input::placeholder {
   border-radius: 8px;
   padding-left: 10px;
   color: white;
+}
+
+.sidebar-item-div {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
 
