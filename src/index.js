@@ -1,4 +1,6 @@
-import './style.css';
-import homePage from './homePage';
+import './styles.css';
+import homePage from './homepage';
 
 console.log('heyyyyyyyyyyyy')
+
+homePage();
