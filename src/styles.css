@@ -59,7 +59,7 @@
     grid-template-columns: 1fr 3.5fr;
     height: 100vh;
     width: 100vw;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 #main {
@@ -71,11 +71,14 @@
     display: flex;
     flex-direction: column;
     padding-bottom: 80px;
+    overflow-y: auto;
 }
 
 #sidebar {
+    position: sticky;
     background-color: #232323;
     min-width: 200px;
+    color: white;
 }
 
 #add-task {
@@ -155,10 +158,27 @@ input::placeholder {
   align-items: center;
 }
 
+.groupDiv {
+  border-top: 2px solid #3b3b3b;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  max-height: 400px; /* Set a maximum height */
+  overflow-y: auto;
+}
+
+.taskGroup {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+
 
 /* Entire scrollbar container */
 ::-webkit-scrollbar {
-    width: 8px; /* Adjust width for vertical scrollbars */
+    width: 5px; /* Adjust width for vertical scrollbars */
     height: 8px; /* Adjust height for horizontal scrollbars */
 }
 

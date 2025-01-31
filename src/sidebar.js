@@ -3,6 +3,7 @@ import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
 import { tasks, tasksData } from './tasks-data.js';
+import listIcon from './images/group.svg'
 
 export default function sidebar() {
     const sidebar = document.querySelector('#sidebar');
@@ -43,7 +44,40 @@ function sidebarItems() {
             chooseDisplay(item.name);
         });
     });
+    displayLists()
+}
 
+function displayLists() {
+    const sidebar = document.querySelector('#sidebar')
+    const groupDiv = document.createElement('div')
+    groupDiv.classList.add('groupDiv')
+    groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;
+    const groupArray = []
+    tasksData.forEach(task => {
+        if (!groupArray.includes(task.group)) {groupArray.push(task.group);}
+    });
+    
+    groupArray.forEach(group => {
+        const taskGroup = document.createElement('div');
+        taskGroup.classList.add('taskGroup');
+        const groupIcon = document.createElement('img');
+        groupIcon.src = listIcon;
+        const groupName = document.createElement('p');
+        groupName.textContent = group;
+        taskGroup.appendChild(groupIcon);
+        taskGroup.appendChild(groupName);
+        groupDiv.appendChild(taskGroup);
+        taskGroup.addEventListener('click', groupSort)
+    })
+    sidebar.appendChild(groupDiv);
+}
+
+function groupSort(event) {
+    const group = event.target.closest('.taskGroup').querySelector('p').textContent;
+    document.querySelector('.task-list').textContent = ''
+    tasksData.forEach(task => {
+        if (task.group == group) {displayTask(task);}
+    });
 }
 
 function chooseDisplay(item) {
