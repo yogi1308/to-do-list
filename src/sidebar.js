@@ -9,6 +9,8 @@ import {header} from './homepage.js';
 
 export { sidebar, displayTask };
 
+let view = ''
+
 function sidebar() {
     const sidebar = document.querySelector('#sidebar');
     const sidebarList = document.createElement('div');
@@ -87,7 +89,7 @@ function groupSort(event) {
 
 function chooseDisplay(item) {
     if (item == 'My Day') {document.querySelector('#main').removeChild(document.querySelector('.header')); header()}
-    else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star)}
+    else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
     else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed)}
     else if (item == 'All') {tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
 }
@@ -121,7 +123,20 @@ function displayTask(task) {
     taskStarIcon.style.position = 'absolute';
     taskStarIcon.style.right = '5%';
     taskStarIcon.style.paddingRight = '10px';
+    taskStarIcon.style.cursor = 'pointer';
+    taskStarIcon.addEventListener('click', importanceChanged);
     taskItem.appendChild(taskStarIcon);
     taskList.appendChild(taskItem);
     main.appendChild(taskList);
+}
+
+function importanceChanged() {
+    const taskName = this.closest('.task-item').querySelector('.task-item-name').textContent;
+    tasksData.forEach(task => {
+        if (task.task == taskName) {
+            if (task.important) {task.important = false; this.src = star; if (view == 'Important') {this.closest('.task-item').remove();}}
+            else {task.important = true; this.src = filledStar;}
+        }
+    });
+
 }
