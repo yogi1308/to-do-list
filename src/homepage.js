@@ -1,9 +1,12 @@
 import { tasks, tasksData } from './tasks-data.js';
-export default function homePage() {
+import {sidebar, displayTask} from './sidebar.js';
+export {homePage, header}
+function homePage() {
     console.log('home page');
     taskBar();
     header();
-    displayTaskList();
+    displayTaskList()
+    tasksData.forEach(task => {displayTask(task)});
     window.addEventListener('resize', adjustAddTaskDivWidth);
 }
 
@@ -34,19 +37,6 @@ function displayTaskList() {
     const main = document.querySelector('#main');
     const taskList = document.createElement('div');
     taskList.classList.add('task-list');
-    tasksData.forEach(task => {
-        const taskItem = document.createElement('div');
-        const taskItemName = document.createElement('p');
-        const taskItemGroup = document.createElement('p');
-        taskItemGroup.classList.add('task-item-group');
-        taskItemName.classList.add('task-item-name')
-        taskItem.classList.add('task-item');
-        taskItemName.textContent = task.task;
-        taskItemGroup.textContent = task.group;
-        taskItem.appendChild(taskItemName);
-        taskItem.appendChild(taskItemGroup);
-        taskList.appendChild(taskItem);
-    });
     main.appendChild(taskList);
 }
 

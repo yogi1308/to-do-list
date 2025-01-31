@@ -1,11 +1,15 @@
 import myDay from './images/my-day.svg';
 import star from './images/star.svg';
+import filledStar from './images/filled-star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
 import { tasks, tasksData } from './tasks-data.js';
 import listIcon from './images/group.svg'
+import {header} from './homepage.js';
 
-export default function sidebar() {
+export { sidebar, displayTask };
+
+function sidebar() {
     const sidebar = document.querySelector('#sidebar');
     const sidebarList = document.createElement('div');
     sidebarList.classList.add('sidebar-list');
@@ -82,7 +86,7 @@ function groupSort(event) {
 }
 
 function chooseDisplay(item) {
-    if (item == 'My Day') {}
+    if (item == 'My Day') {document.querySelector('#main').removeChild(document.querySelector('.header')); header()}
     else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star)}
     else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed)}
     else if (item == 'All') {tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
@@ -111,7 +115,13 @@ function displayTask(task) {
     taskItemGroup.textContent = task.group;
     taskItem.appendChild(taskItemName);
     taskItem.appendChild(taskItemGroup);
+    const taskStarIcon = document.createElement('img');
+    taskStarIcon.classList.add('task-star-icon');
+    if (task.important) {taskStarIcon.src = filledStar;} else {taskStarIcon.src = star;}
+    taskStarIcon.style.position = 'absolute';
+    taskStarIcon.style.right = '5%';
+    taskStarIcon.style.paddingRight = '10px';
+    taskItem.appendChild(taskStarIcon);
     taskList.appendChild(taskItem);
     main.appendChild(taskList);
 }
-

@@ -97,7 +97,9 @@
   padding: 10px 0;
   padding-bottom: 20px;
   backdrop-filter: blur(10px);
+  z-index: 100;
 }
+
 
 input::placeholder {
   color: #788cde; /* Change this to your desired color */
@@ -156,6 +158,7 @@ input::placeholder {
   display: flex;
   gap: 20px;
   align-items: center;
+  cursor: pointer;
 }
 
 .groupDiv {
@@ -172,6 +175,7 @@ input::placeholder {
   display: flex;
   gap: 20px;
   align-items: center;
+  cursor: pointer;
 }
 
 
