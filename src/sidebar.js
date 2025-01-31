@@ -78,13 +78,23 @@ function groupSort(event) {
     tasksData.forEach(task => {
         if (task.group == group) {displayTask(task);}
     });
+    changeHeader(group, listIcon)
 }
 
 function chooseDisplay(item) {
     if (item == 'My Day') {}
-    else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});}
-    else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});}
-    else if (item == 'All') {tasksData.forEach(task => {displayTask(task);});}
+    else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star)}
+    else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed)}
+    else if (item == 'All') {tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
+}
+
+function changeHeader(item, icon) {
+    const header = document.querySelector('.header');
+    header.innerHTML = `<img src=${icon} class='headerIcon'></img><h2>${item}</h2>`;
+    header.style.display = 'flex'
+    header.style.gap = '20px'
+    header.style.marginBottom = '10px'
+    document.querySelector('.headerIcon').style.width = '1.9rem'
 }
 
 
