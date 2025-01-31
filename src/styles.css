@@ -115,11 +115,33 @@ input::placeholder {
 .task-item {
   background-color: #363636;
   color: white;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 10px;
+}
+
+img.task-star-icon {
+  width: 1.5em;
+  cursor: pointer;
+}
+
+img.task-complete-icon {
+  width: 1.5em;
+  cursor: pointer;
+}
+
+.task-item-left > div {
   padding: 5px 10px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 0;
+  justify-self: flex-start;
+}
+
+.task-item-left{
+  display: flex;
+  flex-direction: row;
 }
 
 .header p {

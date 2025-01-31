@@ -2,6 +2,7 @@ import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import filledStar from './images/filled-star.svg';
 import completed from './images/completed.svg';
+import completedFilled from './images/completed-filled.svg';
 import all from './images/all.svg'
 import { tasks, tasksData } from './tasks-data.js';
 import listIcon from './images/group.svg'
@@ -108,22 +109,29 @@ function displayTask(task) {
     const main = document.querySelector('#main');
     const taskList = document.querySelector('.task-list');
     const taskItem = document.createElement('div');
+    const taskItemTextContentDiv = document.createElement('div');
+    const taskItemLeft = document.createElement('div')
     const taskItemName = document.createElement('p');
     const taskItemGroup = document.createElement('p');
+    taskItemLeft.classList.add('task-item-left');
     taskItemGroup.classList.add('task-item-group');
     taskItemName.classList.add('task-item-name')
     taskItem.classList.add('task-item');
     taskItemName.textContent = task.task;
     taskItemGroup.textContent = task.group;
-    taskItem.appendChild(taskItemName);
-    taskItem.appendChild(taskItemGroup);
+    taskItemTextContentDiv.appendChild(taskItemName);
+    taskItemTextContentDiv.appendChild(taskItemGroup);
+
+    const taskCompleteIcon = document.createElement('img');
+    taskCompleteIcon.classList.add('task-complete-icon');
+    if (task.completed) {taskCompleteIcon.src = completedFilled;taskCompleteIcon.style.width = '1.35em'; taskCompleteIcon.style.paddingLeft = '2px'} else {taskCompleteIcon.src = completed;}
+    taskItemLeft.appendChild(taskCompleteIcon)
+    taskItemLeft.appendChild(taskItemTextContentDiv);
+    taskItem.appendChild(taskItemLeft);
+
     const taskStarIcon = document.createElement('img');
     taskStarIcon.classList.add('task-star-icon');
     if (task.important) {taskStarIcon.src = filledStar;} else {taskStarIcon.src = star;}
-    taskStarIcon.style.position = 'absolute';
-    taskStarIcon.style.right = '5%';
-    taskStarIcon.style.paddingRight = '10px';
-    taskStarIcon.style.cursor = 'pointer';
     taskStarIcon.addEventListener('click', importanceChanged);
     taskItem.appendChild(taskStarIcon);
     taskList.appendChild(taskItem);
