@@ -125,6 +125,7 @@ function displayTask(task) {
     const taskCompleteIcon = document.createElement('img');
     taskCompleteIcon.classList.add('task-complete-icon');
     if (task.completed) {taskCompleteIcon.src = completedFilled;taskCompleteIcon.style.width = '1.35em'; taskCompleteIcon.style.paddingLeft = '2px'} else {taskCompleteIcon.src = completed;}
+    taskCompleteIcon.addEventListener('click', completionStatusChanged);
     taskItemLeft.appendChild(taskCompleteIcon)
     taskItemLeft.appendChild(taskItemTextContentDiv);
     taskItem.appendChild(taskItemLeft);
@@ -136,6 +137,16 @@ function displayTask(task) {
     taskItem.appendChild(taskStarIcon);
     taskList.appendChild(taskItem);
     main.appendChild(taskList);
+}
+
+function completionStatusChanged() {
+    const taskName = this.closest('.task-item').querySelector('.task-item-name').textContent;
+    tasksData.forEach(task => {
+        if (task.task == taskName) {
+            if (task.completed) {task.completed = false; this.src = completed; this.style.paddingLeft = '0px'; this.style.width = '1.5em'}
+            else {task.completed = true; this.src = completedFilled; ;this.style.width = '1.35em'; this.style.paddingLeft = '2px'}
+        }
+    });
 }
 
 function importanceChanged() {
