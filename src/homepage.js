@@ -1,6 +1,10 @@
 import { tasks, tasksData } from './tasks-data.js';
 import {sidebar, displayTask} from './sidebar.js';
-export {homePage, header}
+import {format, isToday, parseISO} from 'date-fns'
+let currentDate = new Date()
+console.log(currentDate)
+let currentDay = format(currentDate, 'eeee')
+export {homePage, header, currentDate, currentDay}
 function homePage() {
     console.log('home page');
     taskBar();
@@ -44,7 +48,7 @@ function header() {
     const main = document.querySelector('#main');
     const header = document.createElement('div');
     header.classList.add('header');
-    header.innerHTML = '<h2>My Day</h2><p>Wedneseday, 29 January<p>';
+    header.innerHTML = `<h2>My Day</h2><p>${currentDay}, ${format(currentDate, 'dd MMMM')}<p>`;
     main.appendChild(header);
 }
 

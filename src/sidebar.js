@@ -1,3 +1,5 @@
+//need to add notes to each tasks
+
 import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import filledStar from './images/filled-star.svg';
@@ -6,18 +8,20 @@ import completedFilled from './images/completed-filled.svg';
 import all from './images/all.svg'
 import { tasks, tasksData } from './tasks-data.js';
 import listIcon from './images/group.svg'
-import {header} from './homepage.js';
+import {header, currentDate, currentDay} from './homepage.js';
 import flag from './images/flag.svg';
 import blueFlag from './images/blue-flag.svg';
 import redFlag from './images/red-flag.svg';
 import orangeFlag from './images/orange-flag.svg';
 import down from './images/down.svg';
 import up from './images/up.svg';
+import {format, isToday, parseISO} from 'date-fns'
 
 export { sidebar, displayTask };
 
 let view = ''
 let priorityDisplayListView = false;
+
 
 function sidebar() {
     const sidebar = document.querySelector('#sidebar');
@@ -101,7 +105,7 @@ function groupSort(event) {
 }
 
 function chooseDisplay(item) {
-    if (item == 'My Day') {document.querySelector('.task-list').textContent = ''; document.querySelector('#main').removeChild(document.querySelector('.header')); header()}
+    if (item == 'My Day') {document.querySelector('.task-list').textContent = ''; document.querySelector('#main').removeChild(document.querySelector('.header')); header();displayTodayTasks()}
     else if (item == 'Important') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
     else if (item == 'Completed') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
     else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
@@ -234,4 +238,10 @@ function displayPriorityTasks(event){
         }
     }
     )
+}
+
+function displayTodayTasks() {
+    tasksData.forEach(task => {
+        if (isToday(parseISO(task.day))) {displayTask(task);}
+    });
 }
