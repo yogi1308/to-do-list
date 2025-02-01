@@ -11,10 +11,13 @@ import flag from './images/flag.svg';
 import blueFlag from './images/blue-flag.svg';
 import redFlag from './images/red-flag.svg';
 import orangeFlag from './images/orange-flag.svg';
+import down from './images/down.svg';
+import up from './images/up.svg';
 
 export { sidebar, displayTask };
 
 let view = ''
+let priorityDisplayListView = false;
 
 function sidebar() {
     const sidebar = document.querySelector('#sidebar');
@@ -38,7 +41,7 @@ function displaySearchBar() {
 
 function sidebarItems() {
     const sidebarList = document.querySelector('.sidebar-list');
-    const sidebarItems = [{name: 'My Day',svg: myDay,}, {name: 'Important', svg: star}, {name: 'Completed', svg: completed}, {name: 'All', svg: all},];
+    const sidebarItems = [{name: 'My Day',svg: myDay,}, {name: 'Important', svg: star}, {name: 'Completed', svg: completed}, {name: 'All', svg: all}, {name: 'Priority', svg: flag}];
     sidebarItems.forEach(item => {
         const sidebarItemDiv = document.createElement('div');
         sidebarItemDiv.classList.add('sidebar-item-div');
@@ -51,9 +54,14 @@ function sidebarItems() {
         sidebarItemDiv.appendChild(sidebarItemName);
         sidebarList.appendChild(sidebarItemDiv);
         sidebarItemDiv.addEventListener('click', () => {
-            const taskList = document.querySelector('.task-list');taskList.textContent = '';
             chooseDisplay(item.name);
         });
+        if (item.name == 'Priority') {
+            const dropdownIcon = document.createElement('img');
+            dropdownIcon.src = down;
+            dropdownIcon.classList.add('dropdown-icon');
+            sidebarItemDiv.appendChild(dropdownIcon)
+        }
     });
     displayLists()
 }
@@ -93,10 +101,11 @@ function groupSort(event) {
 }
 
 function chooseDisplay(item) {
-    if (item == 'My Day') {document.querySelector('#main').removeChild(document.querySelector('.header')); header()}
-    else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
-    else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
-    else if (item == 'All') {tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
+    if (item == 'My Day') {document.querySelector('.task-list').textContent = ''; document.querySelector('#main').removeChild(document.querySelector('.header')); header()}
+    else if (item == 'Important') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
+    else if (item == 'Completed') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
+    else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
+    else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;}}
 }
 
 function changeHeader(item, icon) {
@@ -185,4 +194,44 @@ function priorityChanged(){
             else if (task.priority == 'High') {task.priority = ""; this.src = flag;}
         }
     });
+}
+
+function choosePriorityDisplayList() {
+    const sidebarList = document.querySelector('.sidebar-list');
+    const priorityTypesList = document.createElement('div');
+    priorityTypesList.classList.add('priority-types-list');
+    priorityTypesList.style.paddingLeft = '10px'
+    const priorityTypes = [{name:'Low', icon: blueFlag}, {name: 'Medium', icon: orangeFlag}, {name: 'High', icon: redFlag}];
+    priorityTypes.forEach(priority => {
+        const priorityType = document.createElement('div');
+        priorityType.classList.add('priority-type');
+        priorityType.style.display = 'flex';
+        priorityType.style.gap = '10px'
+        const priorityIcon = document.createElement('img');
+        priorityIcon.src = priority.icon;
+        const priorityName = document.createElement('p');
+        priorityName.textContent = priority.name;
+        priorityType.appendChild(priorityIcon);
+        priorityType.appendChild(priorityName);
+        priorityTypesList.appendChild(priorityType);
+        priorityType.addEventListener('click', displayPriorityTasks)
+        priorityType.style.cursor = 'pointer';
+    });
+    sidebarList.appendChild(priorityTypesList);
+    const dropdownIcon = document.querySelector('.dropdown-icon');
+    dropdownIcon.src = up;
+
+    const groupDiv = document.querySelector('.groupDiv');
+    groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;
+}
+
+function displayPriorityTasks(event){
+    let priorityType = event.target.closest('.priority-type').textContent
+    document.querySelector('.task-list').textContent = '';
+    tasksData.forEach(task => {
+        if (task.priority == priorityType) {
+            displayTask(task) ;changeHeader(priorityType + ' Priority', flag); view = 'Priority';
+        }
+    }
+    )
 }

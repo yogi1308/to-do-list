@@ -118,6 +118,8 @@ input::placeholder {
   display: flex;
   justify-content: space-between;
   padding-right: 10px;
+  border-radius: 5px;
+  padding-left: 5px;
 }
 
 img.task-star-icon {
@@ -152,6 +154,10 @@ img.task-complete-icon {
 
 .flag-icon {
   cursor: pointer;
+}
+
+.dropdown-icon {
+  margin-left: auto;
 }
 
 .header p {
