@@ -1,10 +1,9 @@
-// Task factory function
 export const tasks = function (task, priority, group, day, repeat, important, completed) {
     return { task, priority, group, day, repeat, important, completed };
-  };
-  
-  // Fake tasks data
-  export const tasksData = [
+};
+
+// Fake tasks data with some tasks having no priority
+export const tasksData = [
     tasks(
       "Complete JavaScript homework",
       "High",
@@ -16,7 +15,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Workout at the gym",
-      "Medium",
+      "",
       "Health",
       "2025-01-29",
       "Yes (Daily)",
@@ -43,7 +42,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Buy groceries",
-      "Medium",
+      "",
       "Errands",
       "2025-01-29",
       "No",
@@ -61,7 +60,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Read a book",
-      "Low",
+      "",
       "Personal",
       "2025-01-30",
       "No",
@@ -88,7 +87,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Clean desk",
-      "Low",
+      "",
       "Chores",
       "2025-01-29",
       "No",
@@ -107,7 +106,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Meditate for 15 minutes",
-      "Low",
+      "",
       "Health",
       "2025-01-29",
       "Yes (Daily)",
@@ -116,7 +115,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Water the plants",
-      "Low",
+      "",
       "Personal",
       "2025-01-30",
       "Yes (Weekly)",
@@ -143,7 +142,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Plan weekend trip",
-      "Low",
+      "",
       "Personal",
       "2025-01-31",
       "No",
@@ -161,7 +160,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Organize bookshelf",
-      "Low",
+      "",
       "Chores",
       "2025-01-30",
       "No",
@@ -197,7 +196,7 @@ export const tasks = function (task, priority, group, day, repeat, important, co
     ),
     tasks(
       "Bake a cake",
-      "Low",
+      "",
       "Personal",
       "2025-01-30",
       "No",
@@ -232,5 +231,6 @@ export const tasks = function (task, priority, group, day, repeat, important, co
       false
     ),
   ];
+  
   
   

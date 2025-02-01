@@ -7,6 +7,10 @@ import all from './images/all.svg'
 import { tasks, tasksData } from './tasks-data.js';
 import listIcon from './images/group.svg'
 import {header} from './homepage.js';
+import flag from './images/flag.svg';
+import blueFlag from './images/blue-flag.svg';
+import redFlag from './images/red-flag.svg';
+import orangeFlag from './images/orange-flag.svg';
 
 export { sidebar, displayTask };
 
@@ -111,9 +115,11 @@ function displayTask(task) {
     const taskItem = document.createElement('div');
     const taskItemTextContentDiv = document.createElement('div');
     const taskItemLeft = document.createElement('div')
+    const taskItemRight = document.createElement('div')
     const taskItemName = document.createElement('p');
     const taskItemGroup = document.createElement('p');
     taskItemLeft.classList.add('task-item-left');
+    taskItemRight.classList.add('task-item-right');
     taskItemGroup.classList.add('task-item-group');
     taskItemName.classList.add('task-item-name')
     taskItem.classList.add('task-item');
@@ -134,7 +140,16 @@ function displayTask(task) {
     taskStarIcon.classList.add('task-star-icon');
     if (task.important) {taskStarIcon.src = filledStar;} else {taskStarIcon.src = star;}
     taskStarIcon.addEventListener('click', importanceChanged);
-    taskItem.appendChild(taskStarIcon);
+
+    const flagIcon = document.createElement('img');
+    if (task.priority == "") {flagIcon.src = flag;} else if (task.priority == 'Low') {flagIcon.src = blueFlag;} else if (task.priority == 'High') {flagIcon.src = redFlag} else if (task.priority == 'Medium') {flagIcon.src = orangeFlag}
+    flagIcon.classList.add('flag-icon');
+    flagIcon.addEventListener('click', priorityChanged)
+
+    taskItemRight.appendChild(flagIcon);
+    taskItemRight.appendChild(taskStarIcon);
+    taskItem.appendChild(taskItemLeft);
+    taskItem.appendChild(taskItemRight);
     taskList.appendChild(taskItem);
     main.appendChild(taskList);
 }
@@ -158,4 +173,16 @@ function importanceChanged() {
         }
     });
 
+}
+
+function priorityChanged(){
+    const taskName = this.closest('.task-item').querySelector('.task-item-name').textContent;
+    tasksData.forEach(task => {
+        if (task.task == taskName) {
+            if (task.priority == "") {task.priority = 'Low'; this.src = blueFlag;}
+            else if (task.priority == 'Low') {task.priority = 'Medium'; this.src = orangeFlag;}
+            else if (task.priority == 'Medium') {task.priority = 'High'; this.src = redFlag;}
+            else if (task.priority == 'High') {task.priority = ""; this.src = flag;}
+        }
+    });
 }
