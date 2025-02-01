@@ -91,7 +91,7 @@ function groupSort(event) {
 function chooseDisplay(item) {
     if (item == 'My Day') {document.querySelector('#main').removeChild(document.querySelector('.header')); header()}
     else if (item == 'Important') {tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
-    else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed)}
+    else if (item == 'Completed') {tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
     else if (item == 'All') {tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
 }
 
@@ -143,7 +143,7 @@ function completionStatusChanged() {
     const taskName = this.closest('.task-item').querySelector('.task-item-name').textContent;
     tasksData.forEach(task => {
         if (task.task == taskName) {
-            if (task.completed) {task.completed = false; this.src = completed; this.style.paddingLeft = '0px'; this.style.width = '1.5em'}
+            if (task.completed) {task.completed = false; this.src = completed; this.style.paddingLeft = '0px'; this.style.width = '1.5em'; if (view == 'Completed'){this.closest('.task-item').remove();}}
             else {task.completed = true; this.src = completedFilled; ;this.style.width = '1.35em'; this.style.paddingLeft = '2px'}
         }
     });
