@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24px" dispaly="block" viewBox="0 0 100 90" fill="none">
+  <!-- Calendar outline (height 10% less than width) -->
+  <rect x="10" y="10" width="80" height="72" rx="10" fill="#232323" stroke="white" stroke-width="5"/>
+  
+  <!-- Two standing parallel lines (rings) equally outside and inside -->
+  <line x1="30" y1="5" x2="30" y2="25" stroke="white" stroke-width="5"/>
+  <line x1="70" y1="5" x2="70" y2="25" stroke="white" stroke-width="5"/>
+  
+  <!-- Sleeping line (binding) extending to the border of the box -->
+  <line x1="10" y1="25" x2="90" y2="25" stroke="white" stroke-width="5"/>
+  
+  <!-- Number "7" in Roboto font -->
+  <text x="50" y="55" font-family="Roboto, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">30</text>
+</svg>
