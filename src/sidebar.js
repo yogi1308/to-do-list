@@ -1,4 +1,5 @@
 //need to add notes to each tasks
+// enable users to view previous and next week in this week, change the display for this week
 
 import myDay from './images/my-day.svg';
 import star from './images/star.svg';
@@ -15,7 +16,8 @@ import redFlag from './images/red-flag.svg';
 import orangeFlag from './images/orange-flag.svg';
 import down from './images/down.svg';
 import up from './images/up.svg';
-import {format, isToday, parseISO} from 'date-fns'
+import calender from './images/calender.svg'
+import {format, isToday, parseISO, isThisWeek, add, startOfWeek, isSameDay, isTomorrow, isYesterday} from 'date-fns'
 
 export { sidebar, displayTask };
 
@@ -45,7 +47,7 @@ function displaySearchBar() {
 
 function sidebarItems() {
     const sidebarList = document.querySelector('.sidebar-list');
-    const sidebarItems = [{name: 'My Day',svg: myDay,}, {name: 'Important', svg: star}, {name: 'Completed', svg: completed}, {name: 'All', svg: all}, {name: 'Priority', svg: flag}];
+    const sidebarItems = [{name: 'My Day',svg: myDay,},{name: 'This Week', svg: calender}, {name: 'Important', svg: star}, {name: 'Completed', svg: completed}, {name: 'All', svg: all}, {name: 'Priority', svg: flag}];
     sidebarItems.forEach(item => {
         const sidebarItemDiv = document.createElement('div');
         sidebarItemDiv.classList.add('sidebar-item-div');
@@ -110,6 +112,7 @@ function chooseDisplay(item) {
     else if (item == 'Completed') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
     else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
     else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;}}
+    else if (item == 'This Week') {document.querySelector('.task-list').textContent = ''; displayWeekTasks();changeHeader(item, calender); view = 'This Week'}
 }
 
 function changeHeader(item, icon) {
@@ -165,6 +168,8 @@ function displayTask(task) {
     taskItem.appendChild(taskItemRight);
     taskList.appendChild(taskItem);
     main.appendChild(taskList);
+
+    return taskItem
 }
 
 function completionStatusChanged() {
@@ -242,6 +247,68 @@ function displayPriorityTasks(event){
 
 function displayTodayTasks() {
     tasksData.forEach(task => {
-        if (isToday(parseISO(task.day))) {displayTask(task);}
+        if (isToday(parseISO(task.date))) {displayTask(task);}
     });
+}
+
+function getThisWeekDates() {
+    const thisWeek = []
+    const weekStart = startOfWeek(new Date(), {weekStartsOn: 1});
+    for (let i = 0; i < 7; i++) {
+        const date = add(weekStart, { days: i }); // Add 'i' days to the start of the week
+        thisWeek.push(date);
+    }
+    return thisWeek;
+}
+
+function sortTasksForWeekDates() {
+    const thisWeek = getThisWeekDates();
+    let weekTasks = []
+    weekTasks = thisWeek.map(date => new dateAndTask(date));
+    tasksData.forEach(task => {
+        const taskDate = parseISO(task.date); // Convert task date string to a Date object (if task.date is a string)
+        weekTasks.forEach(dateTask => {
+            if (isSameDay(dateTask.date, taskDate)) { // Use date-fns `isSameDay` to compare dates
+                dateTask.addTask(task); // Add the task name (or the entire task object) to the respective date
+            }
+        });
+    });
+    return weekTasks
+}
+
+function displayWeekTasks() {
+    const weekTasks = sortTasksForWeekDates();
+    console.log(weekTasks);
+    weekTasks.forEach(dateTask => {
+        const day = document.createElement('div');
+        day.classList.add('day');
+        day.textContent = format(dateTask.date, 'EEEE • MMMM dd');
+        if (isToday(dateTask.date)) {
+            day.textContent += ' • Today';
+        }
+        else if (isTomorrow(dateTask.date)) {
+            day.textContent += ' • Tomorrow';
+        }
+
+        else if (isYesterday(dateTask.date)) {
+            day.textContent += ' • Yesterday';
+        }
+
+        dateTask.task.forEach(task => {
+            day.appendChild(displayTask(task));
+        });
+
+        document.querySelector('.task-list').appendChild(day);
+    });
+}
+
+
+class dateAndTask {
+    constructor(date) {
+        this.date = date
+        this.task = []
+    }
+    addTask(task) {
+        this.task.push(task);
+    }
 }

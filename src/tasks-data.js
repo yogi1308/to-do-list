@@ -1,5 +1,5 @@
-export const tasks = function (task, priority, group, day, repeat, important, completed) {
-    return { task, priority, group, day, repeat, important, completed };
+export const tasks = function (task, priority, group, date, repeat, important, completed) {
+    return { task, priority, group, date, repeat, important, completed };
 };
 
 // Fake tasks data with some tasks having no priority
