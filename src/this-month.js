@@ -1,143 +1,70 @@
-import {parseISO, add, startOfWeek, isSameDay, getDaysInMonth, startOfMonth} from 'date-fns'
+//need to find a way so that calenderDay also has a year class and need to figure out if i want to make the users view tasks in the next or the previous month how should i go about it
+//see if i can make displayMonth() function more efficient and less code
+
+import {format, parseISO, add, startOfWeek, isSameDay, getDaysInMonth, startOfMonth, getMonth, addMonths, subMonths} from 'date-fns'
 import { dateAndTask, tasksData } from './tasks-data';
 
 export { displayMonthTasks }
+
+const currentDate = new Date();
 
 function displayMonthTasks() {
     // First, display the calendar grid
     displayMonth();
 
-    // Get the calendar grid container
-    const calenderGrid = document.querySelector('.calender-grid');
-    if (!calenderGrid) {
-        console.error('Calendar grid not found.');
-        return;
-    }
-
-    // Keep track of displayed tasks to prevent duplication
-    const displayedTasks = new Set();
-
-    // Iterate through tasks and map them to calendar days
-    tasksData.forEach(task => {
-        // Parse the task's date
-        let taskDate = parseISO(task.date);
-
-        // Get the first and last visible dates in the calendar grid
-        const firstVisibleDate = getFirstVisibleDate();
-        const lastVisibleDate = getLastVisibleDate();
-
-        // Ensure the task's date is within the visible range
-        if (taskDate >= firstVisibleDate && taskDate <= lastVisibleDate) {
-            const taskDay = taskDate.getDate(); // Get the day of the month (1-31)
-
-            // Construct a unique task key based on its date and content to avoid duplication
-            const taskKey = `${task.date}-${task.task}`;
-            if (displayedTasks.has(taskKey)) {
-                return; // Skip if the task is already displayed
+    tasksData.forEach((task) => {
+        // Split the date string
+        let [year, taskMonth, taskDate] = task.date.split("-"); // Split by space
+        taskMonth = determineMonth(taskMonth)
+        taskDate = determineDate(taskDate)
+        if (taskMonth == format(currentDate, 'MMMM') || taskMonth == format(subMonths(currentDate, 1), 'MMMM') || taskMonth == format(addMonths(currentDate, 1), 'MMMM')) {
+            const calendarCell = document.querySelector(`.${taskMonth}-${taskDate}`);
+            // If the div exists, assign the task text to it
+            if (calendarCell) {
+                const calendarTextContent = calendarCell.querySelector('.calender-text-content');
+                const monthTask = document.createElement('p')
+                monthTask.textContent = task.task
+                calendarTextContent.appendChild(monthTask)
             }
-
-            // Find the corresponding calendar day
-            calenderGrid.childNodes.forEach(day => {
-                const dayNumberElement = day.querySelector('.calender-date');
-
-                // Check if this is the correct day
-                if (dayNumberElement && parseInt(dayNumberElement.textContent) === taskDay) {
-                    // Find the text content container
-                    const textContentElement = day.querySelector('.calender-text-content');
-
-                    if (textContentElement) {
-                        // Append the task to the text content inside a styled <p> element
-                        const taskElement = document.createElement('p');
-                        taskElement.textContent = task.task;
-
-                        // Style the task
-                        taskElement.style.backgroundColor = 'lightgrey';
-                        taskElement.style.margin = '2px 0';
-                        taskElement.style.padding = '4px';
-                        taskElement.style.borderRadius = '4px';
-
-                        // If the task is in the previous or next month, make font color grey
-                        if (taskDate < new Date().setDate(1) || taskDate > new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)) {
-                            taskElement.style.color = 'grey';
-                        } else {
-                            taskElement.style.color = 'black';
-                        }
-
-                        textContentElement.appendChild(taskElement);
-
-                        // Let the container's height adjust automatically to fit all tasks
-                        textContentElement.style.height = 'auto';
-
-                        // Mark this task as displayed
-                        displayedTasks.add(taskKey);
-                    }
-                }
-            });
         }
     });
 
-    // Adjust row heights to match the tallest day
-    adjustRowHeights();
 }
 
-/**
- * Adjusts the height of each calendar row to match the tallest calendar day in that row
- */
-function adjustRowHeights() {
-    const calendarGrid = document.querySelector('.calender-grid');
-    if (!calendarGrid) return;
-
-    const rows = [...calendarGrid.children].reduce((acc, day, index) => {
-        const rowIndex = Math.floor(index / 7); // Assuming a 7-day week
-        if (!acc[rowIndex]) acc[rowIndex] = [];
-        acc[rowIndex].push(day);
-        return acc;
-    }, []);
-
-    rows.forEach(row => {
-        let tallestHeight = 0;
-
-        // Find the tallest day in the row
-        row.forEach(day => {
-            const height = day.offsetHeight;
-            if (height > tallestHeight) {
-                tallestHeight = height;
-            }
-        });
-
-        // Set all days in the row to the tallest height
-        row.forEach(day => {
-            day.style.height = `${tallestHeight}px`;
-        });
-    });
+function determineDate(taskDate) {
+    switch (taskDate) {
+        case '01': return '1'
+        case '02': return '2'
+        case '03': return '3'
+        case '04': return '4'
+        case '05': return '5'
+        case '06': return '6'
+        case '07': return '7'
+        case '08': return '8'
+        case '09': return '9'
+        default: return taskDate
+    }
 }
 
-/**
- * Helper function to calculate the first visible date in the calendar grid
- */
-function getFirstVisibleDate() {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-    const dayOfWeek = firstDayOfMonth.getDay();
-    return new Date(firstDayOfMonth.setDate(firstDayOfMonth.getDate() - dayOfWeek));
+function determineMonth(taskMonth) {
+    switch (taskMonth) {
+        case '01': return 'January';
+        case '02': return 'February';
+        case '03': return 'March';
+        case '04': return 'April';
+        case '05': return 'May';
+        case '06': return 'June';
+        case '07': return 'July';
+        case '08': return 'August';
+        case '09': return 'September';
+        case '10': return 'October';
+        case '11': return 'November';
+        case '12': return 'December';
+        default: return '';
+    }
 }
 
-/**
- * Helper function to calculate the last visible date in the calendar grid
- */
-function getLastVisibleDate() {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-    const dayOfWeek = lastDayOfMonth.getDay();
-    return new Date(lastDayOfMonth.setDate(lastDayOfMonth.getDate() + (6 - dayOfWeek)));
-}
-
-
-
-function displayMonth() {
-    const monthTasks = sortTasksForMonthDates();
+function displayMonth() { //displays the calender grid
     const calenderGrid = document.createElement('div');
     calenderGrid.classList.add('calender-grid');
     const header = document.createElement('div');
@@ -150,7 +77,6 @@ function displayMonth() {
     });
     document.querySelector('.task-list').appendChild(header);
 
-    const currentDate = new Date();
     const daysInMonth = getDaysInMonth(currentDate); // Number of days in the current month
     const startDayOfMonth = startOfMonth(currentDate); // Start date of the month
     const startDayIndex = startDayOfMonth.getDay(); // Day of the week the month starts on (0 = Sun, 1 = Mon, etc.)
@@ -180,7 +106,7 @@ function displayMonth() {
                 calenderDate.classList.add('calender-date');
                 calenderDate.textContent = prevMonthDays - startDayIndex + i + 1; // Get the last days of previous month
                 calenderDate.style.color = '#4a547d';
-                calenderDay.classList.add('empty-day'); // Add lighter color class
+                calenderDay.classList.add(`${format(subMonths(currentDate, 1), 'MMMM')}-${prevMonthDays - startDayIndex + i + 1}`)
                 calenderDay.appendChild(calenderDate);
                 calenderDay.appendChild(calenderTextContent)
             } else if (currentDay <= daysInMonth) { // Current month days
@@ -188,6 +114,7 @@ function displayMonth() {
                 const calenderTextContent = document.createElement('div')
                 calenderTextContent.classList.add('calender-text-content')
                 calenderDate.classList.add('calender-date');
+                calenderDay.classList.add(`${format(currentDate, 'MMMM')}-${currentDay}`)
                 calenderDate.textContent = currentDay; // Set the current month's date
                 calenderDay.appendChild(calenderDate);
                 calenderDay.appendChild(calenderTextContent)
@@ -199,7 +126,7 @@ function displayMonth() {
                 calenderDate.classList.add('calender-date');
                 calenderTextContent.style.height = '100%'
                 calenderDate.textContent = currentDay - daysInMonth; // Get the first days of next month
-                calenderDay.classList.add('empty-day'); // Add lighter color class
+                calenderDay.classList.add(`${format(addMonths(currentDate, 1), 'MMMM')}-${currentDay - daysInMonth}`)
                 calenderDate.style.color = '#4a547d';
                 calenderDay.appendChild(calenderDate);
                 calenderDay.appendChild(calenderTextContent)
@@ -209,28 +136,5 @@ function displayMonth() {
         }
     }
 
-    calenderGrid.style.height = `calc(${numberOfRows} * calc(80vh/5))`;
     document.querySelector('.task-list').appendChild(calenderGrid);
-    console.log(monthTasks);
-}
-
-
-function sortTasksForMonthDates() {
-    const monthTasks = []
-    const monthStart = startOfWeek(new Date(), {weekStartsOn: 1});
-    for (let i = 0; i < 30; i++) {
-        const date = add(monthStart, { days: i }); // Add 'i' days to the start of the week
-        monthTasks.push(date);
-    }
-    let monthTasksArray = []
-    monthTasksArray = monthTasks.map(date => new dateAndTask(date));
-    tasksData.forEach(task => {
-        const taskDate = parseISO(task.date); // Convert task date string to a Date object (if task.date is a string)
-        monthTasksArray.forEach(dateTask => {
-            if (isSameDay(dateTask.date, taskDate)) { // Use date-fns `isSameDay` to compare dates
-                dateTask.addTask(task); // Add the task name (or the entire task object) to the respective date
-            }
-        });
-    });
-    return monthTasksArray
 }

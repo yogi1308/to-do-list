@@ -241,6 +241,482 @@ export const tasksData = [
       true,
       false
     ),
+    tasks(
+      "Attend virtual seminar",
+      "High",
+      "Academics",
+      "2025-02-04",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Go for a run",
+      "",
+      "Health",
+      "2025-02-05",
+      "Yes (Daily)",
+      false,
+      false
+    ),
+    tasks(
+      "Attend workshop on resume writing",
+      "Medium",
+      "Career",
+      "2025-02-06",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Go to dentist appointment",
+      "High",
+      "Health",
+      "2025-02-07",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Attend team brainstorming session",
+      "High",
+      "Work",
+      "2025-02-08",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Attend birthday party",
+      "",
+      "Personal",
+      "2025-02-09",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Prepare lunch for the week",
+      "Medium",
+      "Health",
+      "2025-02-10",
+      "Yes (Weekly)",
+      false,
+      false
+    ),
+    tasks(
+      "Do laundry",
+      "",
+      "Chores",
+      "2025-02-11",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Submit taxes",
+      "High",
+      "Finance",
+      "2025-02-12",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Complete work proposal",
+      "High",
+      "Work",
+      "2025-02-13",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Family movie night",
+      "",
+      "Personal",
+      "2025-02-14",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Attend marketing webinar",
+      "Medium",
+      "Career",
+      "2025-02-15",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Visit a museum",
+      "",
+      "Personal",
+      "2025-02-16",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Donate to charity",
+      "High",
+      "Community",
+      "2025-02-17",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Meal prep for the week",
+      "Medium",
+      "Health",
+      "2025-02-18",
+      "Yes (Weekly)",
+      false,
+      false
+    ),
+    tasks(
+      "Write blog post",
+      "High",
+      "Work",
+      "2025-02-19",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Organize closet",
+      "",
+      "Chores",
+      "2025-02-20",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Read an article about sustainability",
+      "Low",
+      "Personal",
+      "2025-02-21",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Sign up for online course",
+      "High",
+      "Career",
+      "2025-02-22",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Grocery shopping",
+      "",
+      "Errands",
+      "2025-02-23",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Catch up with old friends",
+      "Low",
+      "Personal",
+      "2025-02-24",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Clean kitchen",
+      "",
+      "Chores",
+      "2025-02-25",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Prepare a report for work",
+      "High",
+      "Work",
+      "2025-02-26",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Complete research paper",
+      "High",
+      "Academics",
+      "2025-02-27",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Meet with mentor",
+      "Medium",
+      "Career",
+      "2025-02-28",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Declutter the garage",
+      "Medium",
+      "Chores",
+      "2025-02-28",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Plan February goals",
+      "High",
+      "Personal",
+      "2025-02-01",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Research new coding techniques",
+      "High",
+      "Academics",
+      "2025-02-02",
+      "No",
+      false,
+      false
+    ),
+    tasks("Plan New Year resolutions", "High", "Personal", "2025-01-01", "No", true, false),
+    tasks("Organize workspace", "Medium", "Chores", "2025-01-02", "No", false, false),
+    tasks("Start new book", "", "Personal", "2025-01-03", "No", false, false),
+    tasks("Attend gym session", "", "Health", "2025-01-04", "Yes (Daily)", false, false),
+    tasks("Review annual budget", "High", "Finance", "2025-01-05", "No", true, false),
+    tasks("Schedule doctor's checkup", "Medium", "Health", "2025-01-06", "No", true, false),
+    tasks("Plan family dinner", "", "Personal", "2025-01-07", "No", false, false),
+    tasks("Update project timeline", "High", "Work", "2025-01-08", "No", true, false),
+    tasks("Clean out email inbox", "Medium", "Work", "2025-01-09", "No", false, false),
+    tasks("Go for a walk", "", "Health", "2025-01-10", "Yes (Daily)", false, false),
+
+    // Additional tasks for March
+    tasks("Plan spring cleaning", "Medium", "Chores", "2025-03-01", "No", false, false),
+    tasks("Start gardening", "", "Personal", "2025-03-02", "No", false, false),
+    tasks("Attend team meeting", "High", "Work", "2025-03-03", "No", true, false),
+    tasks("Prepare for quarterly review", "High", "Work", "2025-03-04", "No", true, false),
+    tasks("Go for a run", "", "Health", "2025-03-05", "Yes (Daily)", false, false),
+    tasks("Plan vacation", "Medium", "Personal", "2025-03-06", "No", false, false),
+    tasks("Organize digital files", "Medium", "Work", "2025-03-07", "No", false, false),
+    tasks("Attend yoga class", "", "Health", "2025-03-08", "Yes (Weekly)", false, false),
+    tasks("Review investment portfolio", "High", "Finance", "2025-03-09", "No", true, false),
+    tasks("Plan March goals", "High", "Personal", "2025-03-10", "No", true, false),
+    tasks(
+      "Submit midterm review",
+      "High",
+      "Academics",
+      "2025-01-26",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Attend networking event",
+      "Medium",
+      "Career",
+      "2025-01-27",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Review budget and expenses",
+      "Medium",
+      "Finance",
+      "2025-01-28",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Do a deep clean of the house",
+      "Medium",
+      "Chores",
+      "2025-01-29",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Complete group project",
+      "High",
+      "Academics",
+      "2025-01-30",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Host a virtual study group",
+      "High",
+      "Academics",
+      "2025-02-12",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Check-in on job application status",
+      "Medium",
+      "Career",
+      "2025-02-13",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Prepare for upcoming exam",
+      "High",
+      "Academics",
+      "2025-02-14",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Clean out email inbox",
+      "Medium",
+      "Personal",
+      "2025-02-15",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Create monthly content plan",
+      "High",
+      "Work",
+      "2025-02-16",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Plan a family outing",
+      "Low",
+      "Personal",
+      "2025-02-17",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Practice coding skills",
+      "High",
+      "Academics",
+      "2025-02-18",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Complete March budget forecast",
+      "High",
+      "Finance",
+      "2025-03-01",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Begin new online course",
+      "High",
+      "Career",
+      "2025-03-02",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Update LinkedIn profile",
+      "Medium",
+      "Career",
+      "2025-03-03",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Attend a professional development event",
+      "High",
+      "Career",
+      "2025-03-04",
+      "No",
+      true,
+      false
+    ),
+    tasks(
+      "Go to the gym for strength training",
+      "Medium",
+      "Health",
+      "2025-03-05",
+      "Yes (Weekly)",
+      false,
+      false
+    ),
+    tasks(
+      "Prepare weekly meals",
+      "Medium",
+      "Health",
+      "2025-03-06",
+      "Yes (Weekly)",
+      false,
+      false
+    ),
+    tasks(
+      "Practice mindfulness meditation",
+      "Medium",
+      "Health",
+      "2025-03-07",
+      "Yes (Daily)",
+      false,
+      false
+    ),
+    tasks("Review January goals", "High", "Personal", "2025-01-25", "No", true, false),
+    tasks("Organize digital files", "Medium", "Work", "2025-01-26", "No", false, false),
+    tasks("Plan February budget", "High", "Finance", "2025-01-27", "No", true, false),
+    tasks("Attend networking event", "Medium", "Career", "2025-01-28", "No", true, false),
+    tasks("Clean out fridge", "", "Chores", "2025-01-29", "No", false, false),
+    tasks("Write thank-you notes", "Low", "Personal", "2025-01-30", "No", false, false),
+    tasks("Plan weekend activities", "", "Personal", "2025-01-31", "No", false, false),
+
+    // Additional tasks for the first week of March
+    tasks("Start spring cleaning", "Medium", "Chores", "2025-03-01", "No", false, false),
+    tasks("Plan garden layout", "", "Personal", "2025-03-02", "No", false, false),
+    tasks("Attend team meeting", "High", "Work", "2025-03-03", "No", true, false),
+    tasks("Prepare for quarterly review", "High", "Work", "2025-03-04", "No", true, false),
+    tasks("Go for a run", "", "Health", "2025-03-05", "Yes (Daily)", false, false),
+    tasks("Plan vacation itinerary", "Medium", "Personal", "2025-03-06", "No", false, false),
+    tasks("Organize digital files", "Medium", "Work", "2025-03-07", "No", false, false),
+    tasks("Attend yoga class", "", "Health", "2025-03-08", "Yes (Weekly)", false, false),
+    tasks("Review investment portfolio", "High", "Finance", "2025-03-09", "No", true, false),
+    tasks("Plan March goals", "High", "Personal", "2025-03-10", "No", true, false),
+
+    // Additional tasks for the middle of February
+    tasks("Attend team lunch", "", "Work", "2025-02-12", "No", false, false),
+    tasks("Plan Valentine's Day", "Medium", "Personal", "2025-02-13", "No", false, false),
+    tasks("Review project progress", "High", "Work", "2025-02-14", "No", true, false),
+    tasks("Go for a hike", "", "Health", "2025-02-15", "No", false, false),
+    tasks("Organize pantry", "Medium", "Chores", "2025-02-16", "No", false, false),
+    tasks("Update LinkedIn profile", "High", "Career", "2025-02-17", "No", true, false),
+    tasks("Plan weekend getaway", "", "Personal", "2025-02-18", "No", false, false),
+    tasks("Review monthly expenses", "High", "Finance", "2025-02-19", "No", true, false),
+    tasks("Attend book club meeting", "", "Personal", "2025-02-20", "No", false, false),
+    tasks("Clean out garage", "Medium", "Chores", "2025-02-21", "No", false, false),        
   ];
   
   
