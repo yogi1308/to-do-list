@@ -2,6 +2,17 @@ export const tasks = function (task, priority, group, date, repeat, important, c
     return { task, priority, group, date, repeat, important, completed };
 };
 
+export class dateAndTask {
+  constructor(date) {
+      this.date = date
+      this.task = []
+  }
+  addTask(task) {
+      this.task.push(task);
+  }
+}
+
+
 // Fake tasks data with some tasks having no priority
 export const tasksData = [
     tasks(

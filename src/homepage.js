@@ -1,16 +1,18 @@
 import { tasks, tasksData } from './tasks-data.js';
-import {sidebar, displayTask} from './sidebar.js';
-import {format, isToday, parseISO} from 'date-fns'
+import {displayTodayTasks} from './my-day.js'
+import {format} from 'date-fns'
+
 let currentDate = new Date()
 console.log(currentDate)
 let currentDay = format(currentDate, 'eeee')
 export {homePage, header, currentDate, currentDay}
+
 function homePage() {
     console.log('home page');
     taskBar();
     header();
     displayTaskList()
-    tasksData.forEach(task => {displayTask(task)});
+    displayTodayTasks()
     window.addEventListener('resize', adjustAddTaskDivWidth);
 }
 
