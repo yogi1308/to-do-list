@@ -275,6 +275,38 @@ img.task-complete-icon {
   width: 4px; /* Set the width of the scrollbar */
 }
 
+.header, .task-list {
+  position: relative;
+}
+
+.up-arrow {
+  align-self: center;
+  position: absolute;
+  right: 0px;
+  height: 90%;
+  cursor: pointer;
+}
+
+.down-arrow {
+  position: absolute;
+  right: 0px;
+  bottom: -1em;
+  cursor: pointer;
+}
+
+.forward-arrow {
+  height: 1.75em;
+  align-self: center;
+  cursor: pointer;
+}
+
+.backward-arrow {
+  height: 1.75em;
+  align-self: center;
+  order: -1;
+  cursor: pointer;
+}
+
 
 /* Entire scrollbar container */
 ::-webkit-scrollbar {

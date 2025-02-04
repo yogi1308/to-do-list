@@ -115,7 +115,7 @@ function chooseDisplay(item) {
     else if (item == 'Completed') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
     else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
     else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;}}
-    else if (item == 'This Week') {document.querySelector('.task-list').textContent = ''; displayWeekTasks();changeHeader(item, calender); view = 'This Week'}
+    else if (item == 'This Week') {document.querySelector('.task-list').textContent = ''; changeHeader(item, calender); displayWeekTasks();view = 'This Week'}
     else if (item == 'This Month') {document.querySelector('.task-list').textContent = ''; changeHeader(item, monthCalender); view = 'This Month'; displayMonthTasks()}
 }
 

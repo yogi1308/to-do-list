@@ -296,6 +296,24 @@ export const tasksData = [
       false
     ),
     tasks(
+      "Attend birthday party",
+      "",
+      "Personal",
+      "2025-02-09",
+      "No",
+      false,
+      false
+    ),
+    tasks(
+      "Attend birthday party",
+      "",
+      "Personal",
+      "2025-02-09",
+      "No",
+      false,
+      false
+    ),
+    tasks(
       "Prepare lunch for the week",
       "Medium",
       "Health",

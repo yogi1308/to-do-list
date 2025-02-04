@@ -5,6 +5,9 @@
 import {format, parseISO, add, startOfWeek, isSameDay, getDaysInMonth, startOfMonth, getMonth, addMonths, subMonths} from 'date-fns'
 import { dateAndTask, tasksData } from './tasks-data';
 
+import arrowForwards from './images/forward-arrow-minimalistic.svg'
+import arrowBack from './images/back-arrow-minimalistic.svg'
+
 export { displayMonthTasks }
 
 const currentDate = new Date();
@@ -140,4 +143,24 @@ function displayMonth() { //displays the calender grid
     }
 
     document.querySelector('.task-list').appendChild(calenderGrid);
+    addArrows()
+}
+
+
+function addArrows() {
+    const taskList = document.querySelector('.header')
+    const arrowUp = document.createElement('img')
+    arrowUp.classList.add('forward-arrow')
+    arrowUp.src = arrowForwards
+    arrowUp.addEventListener('click', nextMonthClicked)
+    taskList.appendChild(arrowUp)
+    const arrowDown = document.createElement('img')
+    arrowDown.src = arrowBack;
+    arrowDown.classList.add('backward-arrow')
+    arrowDown.addEventListener('click', nextMonthClicked)
+    taskList.appendChild(arrowDown)
+}
+
+function nextMonthClicked() {
+
 }

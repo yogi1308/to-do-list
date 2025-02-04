@@ -4,6 +4,9 @@ import { format, isToday, isTomorrow, isYesterday, isSameDay, startOfWeek, add, 
 import { tasksData, dateAndTask } from './tasks-data.js';
 import {displayTask} from './display-tasks.js'
 
+import arrowUpSVG from './images/arrow-up.svg'
+import arrowDownSVG from './images/arrow-down.svg'
+
 function getThisWeekDates() {
     const thisWeek = []
     const weekStart = startOfWeek(new Date(), {weekStartsOn: 1});
@@ -53,4 +56,25 @@ function displayWeekTasks() {
 
         document.querySelector('.task-list').appendChild(day);
     });
+    addArrows()
+}
+
+function addArrows() {
+    const header = document.querySelector('.header')
+    const arrowUp = document.createElement('img')
+    arrowUp.classList.add('up-arrow')
+    arrowUp.src = arrowUpSVG
+    arrowUp.addEventListener('click', weekUpClicked)
+    header.appendChild(arrowUp)
+    const taskList = document.querySelector('.task-list')
+    const arrowDown = document.createElement('img')
+    arrowDown.src = arrowDownSVG;
+    arrowDown.classList.add('down-arrow')
+    arrowDown.style.height = arrowUp.clientHeight +'px'
+    arrowDown.addEventListener('click', weekUpClicked)
+    taskList.appendChild(arrowDown)
+}
+
+function weekUpClicked() {
+    console.log('week up')
 }
