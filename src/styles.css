@@ -266,6 +266,10 @@ img.task-complete-icon {
   border: 1px solid #363636;
 }
 
+.notInCurrMonth > .calender-text-content > p {
+  color: #4a547d;
+}
+
 
 .calender-text-content::-webkit-scrollbar {
   width: 4px; /* Set the width of the scrollbar */

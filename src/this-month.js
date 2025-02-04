@@ -1,5 +1,6 @@
 //need to find a way so that calenderDay also has a year class and need to figure out if i want to make the users view tasks in the next or the previous month how should i go about it
 //see if i can make displayMonth() function more efficient and less code
+// add next and previous month arrows on th side
 
 import {format, parseISO, add, startOfWeek, isSameDay, getDaysInMonth, startOfMonth, getMonth, addMonths, subMonths} from 'date-fns'
 import { dateAndTask, tasksData } from './tasks-data';
@@ -104,6 +105,7 @@ function displayMonth() { //displays the calender grid
                 calenderTextContent.classList.add('calender-text-content')
                 calenderTextContent.style.height = '100%'
                 calenderDate.classList.add('calender-date');
+                calenderDay.classList.add('notInCurrMonth')
                 calenderDate.textContent = prevMonthDays - startDayIndex + i + 1; // Get the last days of previous month
                 calenderDate.style.color = '#4a547d';
                 calenderDay.classList.add(`${format(subMonths(currentDate, 1), 'MMMM')}-${prevMonthDays - startDayIndex + i + 1}`)
@@ -124,6 +126,7 @@ function displayMonth() { //displays the calender grid
                 const calenderTextContent = document.createElement('div')
                 calenderTextContent.classList.add('calender-text-content')
                 calenderDate.classList.add('calender-date');
+                calenderDay.classList.add('notInCurrMonth')
                 calenderTextContent.style.height = '100%'
                 calenderDate.textContent = currentDay - daysInMonth; // Get the first days of next month
                 calenderDay.classList.add(`${format(addMonths(currentDate, 1), 'MMMM')}-${currentDay - daysInMonth}`)
