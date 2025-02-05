@@ -84,6 +84,9 @@ function weekUpClicked() {
     if (event.target.closest('.up-arrow')) {plusMinusDays -= 7}
     else if (event.target.closest('.down-arrow')) {plusMinusDays += 7}
     document.querySelector('.task-list').textContent = ''; changeHeader('Entire Week\'s Task List', calender);
+    if (plusMinusDays == 0) {changeHeader('This Week', calender)}
+    else if (plusMinusDays == 7) {changeHeader('Next Week', calender)}
+    else if (plusMinusDays == -7) {changeHeader('Previous Week', calender)}
     const nextWeek = addDays(new Date(), plusMinusDays)
     console.log(nextWeek)
     displayWeekTasks(nextWeek)

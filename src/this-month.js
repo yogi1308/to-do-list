@@ -1,20 +1,26 @@
-//need to find a way so that calenderDay also has a year class and need to figure out if i want to make the users view tasks in the next or the previous month how should i go about it
 //see if i can make displayMonth() function more efficient and less code
-// add next and previous month arrows on th side
 
-import {format, parseISO, add, startOfWeek, isSameDay, getDaysInMonth, startOfMonth, getMonth, addMonths, subMonths} from 'date-fns'
+import {format, parseISO, add, startOfWeek, isSameDay, getDaysInMonth, startOfMonth, getMonth, addMonths, subMonths, addDays} from 'date-fns'
 import { dateAndTask, tasksData } from './tasks-data';
+import { changeHeader } from './sidebar';
 
 import arrowForwards from './images/forward-arrow-minimalistic.svg'
 import arrowBack from './images/back-arrow-minimalistic.svg'
+import monthCalender from './images/month-calender.svg'
+import calenderLayout from './images/calender-layout.svg'
 
-export { displayMonthTasks }
+export { displayMonthTasks, setPlusMinusMonthsToZero }
 
-const currentDate = new Date();
+let plusMinusMonths = 0;
+let compactLayout = false
 
-function displayMonthTasks() {
+function setPlusMinusMonthsToZero() {
+    plusMinusMonths = 0;
+}
+
+function displayMonthTasks(currentDate) {
     // First, display the calendar grid
-    displayMonth();
+    displayMonth(currentDate);
 
     tasksData.forEach((task) => {
         // Split the date string
@@ -22,7 +28,7 @@ function displayMonthTasks() {
         taskMonth = determineMonth(taskMonth)
         taskDate = determineDate(taskDate)
         if (taskMonth == format(currentDate, 'MMMM') || taskMonth == format(subMonths(currentDate, 1), 'MMMM') || taskMonth == format(addMonths(currentDate, 1), 'MMMM')) {
-            const calendarCell = document.querySelector(`.${taskMonth}-${taskDate}`);
+            const calendarCell = document.querySelector(`.${taskMonth}-${year}-${taskDate}`);
             // If the div exists, assign the task text to it
             if (calendarCell) {
                 const calendarTextContent = calendarCell.querySelector('.calender-text-content');
@@ -68,7 +74,12 @@ function determineMonth(taskMonth) {
     }
 }
 
-function displayMonth() { //displays the calender grid
+function displayMonth(currentDate) { // displays the calendar grid
+    // Get the container and clear any previous content.
+    const taskList = document.querySelector('.task-list');
+    taskList.innerHTML = '';
+
+    // Create and append the header.
     const calenderGrid = document.createElement('div');
     calenderGrid.classList.add('calender-grid');
     const header = document.createElement('div');
@@ -79,76 +90,88 @@ function displayMonth() { //displays the calender grid
         calenderDay.textContent = day;
         header.appendChild(calenderDay);
     });
-    document.querySelector('.task-list').appendChild(header);
+    taskList.appendChild(header);
 
-    const daysInMonth = getDaysInMonth(currentDate); // Number of days in the current month
-    const startDayOfMonth = startOfMonth(currentDate); // Start date of the month
+    // Calculate month-related values.
+    const daysInMonth = getDaysInMonth(currentDate); // e.g., from date-fns
+    const startDayOfMonth = startOfMonth(currentDate); // Date representing the 1st of current month
     const startDayIndex = startDayOfMonth.getDay(); // Day of the week the month starts on (0 = Sun, 1 = Mon, etc.)
 
-    // Calculate the number of rows needed (each row has 7 days)
+    // Calculate number of rows needed (each row has 7 days)
     const totalDaysIncludingPadding = startDayIndex + daysInMonth;
-    const numberOfRows = Math.ceil(totalDaysIncludingPadding / 7); // Round up to ensure all days fit
+    const numberOfRows = Math.ceil(totalDaysIncludingPadding / 7);
 
-    let currentDay = 1; // Start with the 1st day of the month
+    let currentDay = 1; // day counter for the current month
 
-    // Get the previous month's last day to fill the empty spaces before the 1st
-    const prevMonthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); 
-    const prevMonthDays = prevMonthEnd.getDate(); // Number of days in the previous month
+    // Get the last day of the previous month.
+    const prevMonthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+    const prevMonthDays = prevMonthEnd.getDate();
 
-    // Loop through each row in the calendar grid
+    // Build the calendar grid rows.
     for (let row = 0; row < numberOfRows; ++row) {
         for (let i = 0; i < 7; ++i) {
             const calenderDay = document.createElement('div');
             calenderDay.classList.add('calender-day');
-            
-            // Fill in empty days with previous month's or next month's dates
-            if (row === 0 && i < startDayIndex) { // First row and before the start of the month
+
+            // Case 1: Days from the previous month (first row only)
+            if (row === 0 && i < startDayIndex) {
                 const calenderDate = document.createElement('div');
-                const calenderTextContent = document.createElement('div')
-                calenderTextContent.classList.add('calender-text-content')
-                calenderTextContent.style.height = '100%'
+                const calenderTextContent = document.createElement('div');
+                calenderTextContent.classList.add('calender-text-content');
+                calenderTextContent.style.height = '100%';
                 calenderDate.classList.add('calender-date');
-                calenderDay.classList.add('notInCurrMonth')
-                calenderDate.textContent = prevMonthDays - startDayIndex + i + 1; // Get the last days of previous month
+                calenderDay.classList.add('notInCurrMonth');
+                const prevDate = prevMonthDays - startDayIndex + i + 1;
+                calenderDate.textContent = prevDate;
                 calenderDate.style.color = '#4a547d';
-                calenderDay.classList.add(`${format(subMonths(currentDate, 1), 'MMMM')}-${prevMonthDays - startDayIndex + i + 1}`)
+                calenderDay.classList.add(`${format(subMonths(currentDate, 1), 'MMMM-yyyy')}-${prevDate}`);
                 calenderDay.appendChild(calenderDate);
-                calenderDay.appendChild(calenderTextContent)
-            } else if (currentDay <= daysInMonth) { // Current month days
+                calenderDay.appendChild(calenderTextContent);
+            }
+            // Case 2: Days in the current month
+            else if (currentDay <= daysInMonth) {
                 const calenderDate = document.createElement('div');
-                const calenderTextContent = document.createElement('div')
-                calenderTextContent.classList.add('calender-text-content')
+                const calenderTextContent = document.createElement('div');
+                calenderTextContent.classList.add('calender-text-content');
                 calenderDate.classList.add('calender-date');
-                calenderDay.classList.add(`${format(currentDate, 'MMMM')}-${currentDay}`)
-                calenderDate.textContent = currentDay; // Set the current month's date
+                calenderDay.classList.add(`${format(currentDate, 'MMMM-yyyy')}-${currentDay}`);
+                calenderDate.textContent = currentDay;
                 calenderDay.appendChild(calenderDate);
-                calenderDay.appendChild(calenderTextContent)
-                currentDay++; // Increment the day
-            } else { // Next month days (after the last day of the current month)
+                calenderDay.appendChild(calenderTextContent);
+                currentDay++; // move to next day
+            }
+            // Case 3: Days from the next month (after current month ends)
+            else {
                 const calenderDate = document.createElement('div');
-                const calenderTextContent = document.createElement('div')
-                calenderTextContent.classList.add('calender-text-content')
+                const calenderTextContent = document.createElement('div');
+                calenderTextContent.classList.add('calender-text-content');
                 calenderDate.classList.add('calender-date');
-                calenderDay.classList.add('notInCurrMonth')
-                calenderTextContent.style.height = '100%'
-                calenderDate.textContent = currentDay - daysInMonth; // Get the first days of next month
-                calenderDay.classList.add(`${format(addMonths(currentDate, 1), 'MMMM')}-${currentDay - daysInMonth}`)
+                calenderDay.classList.add('notInCurrMonth');
+                calenderTextContent.style.height = '100%';
+                const nextDate = currentDay - daysInMonth; // next month day number
+                calenderDate.textContent = nextDate;
                 calenderDate.style.color = '#4a547d';
+                calenderDay.classList.add(`${format(addMonths(currentDate, 1), 'MMMM-yyyy')}-${nextDate}`);
                 calenderDay.appendChild(calenderDate);
-                calenderDay.appendChild(calenderTextContent)
-                currentDay++; // Increment for next month
+                calenderDay.appendChild(calenderTextContent);
+                currentDay++;
             }
             calenderGrid.appendChild(calenderDay);
         }
     }
 
-    document.querySelector('.task-list').appendChild(calenderGrid);
-    addArrows()
+    taskList.appendChild(calenderGrid);
+    addArrows();
+    if (compactLayout) {document.querySelector('.calender-grid').classList.add('compact-layout');}
 }
+
 
 
 function addArrows() {
     const taskList = document.querySelector('.header')
+    const existingArrows = taskList.querySelectorAll('.forward-arrow, .backward-arrow');
+    existingArrows.forEach(arrow => arrow.remove());
+
     const arrowUp = document.createElement('img')
     arrowUp.classList.add('forward-arrow')
     arrowUp.src = arrowForwards
@@ -159,8 +182,31 @@ function addArrows() {
     arrowDown.classList.add('backward-arrow')
     arrowDown.addEventListener('click', nextMonthClicked)
     taskList.appendChild(arrowDown)
+
+    const layout = document.createElement('img')
+    layout.src = calenderLayout;
+    layout.classList.add('calender-layout')
+    layout.addEventListener('click', changeCalenderLayout)
+    taskList.appendChild(layout)
+
 }
 
 function nextMonthClicked() {
+    if (event.target.closest('.forward-arrow')) {plusMinusMonths++;} 
+    else if (event.target.closest('.backward-arrow')) {plusMinusMonths--;}
+    const nextMonth = addMonths(new Date(), plusMinusMonths);
+    const currentYear = format(new Date(), 'yyyy');
+    const targetYear = format(nextMonth, 'yyyy');
+    document.querySelector('.task-list').textContent = ''; 
+    if (currentYear !== targetYear) {changeHeader(format(nextMonth, 'MMMM yyyy') + '\'s Task List', monthCalender);}
+    else if ( plusMinusMonths != 0 && plusMinusMonths != 1 && plusMinusMonths != -1) {changeHeader(format(nextMonth, 'MMMM') + '\'s Task List', monthCalender);}
+    else if (plusMinusMonths === 0) {changeHeader('This Month', monthCalender);} 
+    else if (plusMinusMonths === 1) {changeHeader('Next Month', monthCalender);} 
+    else if (plusMinusMonths === -1) {changeHeader('Previous Month', monthCalender);}
+    displayMonthTasks(nextMonth);
+}
 
+function changeCalenderLayout() {
+    if (compactLayout) {document.querySelector('.calender-grid').classList.remove('compact-layout'); compactLayout = false}
+    else {document.querySelector('.calender-grid').classList.add('compact-layout'); compactLayout = true}
 }

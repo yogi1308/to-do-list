@@ -19,7 +19,7 @@ import monthCalender from './images/month-calender.svg'
 
 import { currentDate } from './homepage.js';
 import {displayWeekTasks} from './this-week.js'
-import {displayMonthTasks} from './this-month.js'
+import {displayMonthTasks, setPlusMinusMonthsToZero} from './this-month.js'
 import {displayTodayTasks} from './my-day.js'
 import {displayTask} from './display-tasks.js'
 
@@ -117,7 +117,7 @@ function chooseDisplay(item) {
     else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
     else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;}}
     else if (item == 'This Week') {document.querySelector('.task-list').textContent = ''; changeHeader(item, calender); displayWeekTasks(currentDate);view = 'This Week'}
-    else if (item == 'This Month') {document.querySelector('.task-list').textContent = ''; changeHeader(item, monthCalender); view = 'This Month'; displayMonthTasks()}
+    else if (item == 'This Month') {document.querySelector('.task-list').textContent = ''; changeHeader(item, monthCalender); view = 'This Month'; setPlusMinusMonthsToZero(); displayMonthTasks(currentDate);}
 }
 
 function changeHeader(item, icon) {

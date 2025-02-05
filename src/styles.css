@@ -228,8 +228,13 @@ img.task-complete-icon {
 .calender-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(auto-fill, calc(80vh / 5));
-  height: 80vh;
+  grid-template-rows: repeat(6, minmax(calc(80vh/5), 1fr));
+  height: 100%;
+}
+
+.compact-layout {
+  grid-template-rows: repeat(6, minmax(calc(80vh/5), calc(80vh/5)));
+  height: 100%;
 }
 
 .calender-header {
@@ -304,6 +309,14 @@ img.task-complete-icon {
   height: 1.75em;
   align-self: center;
   order: -1;
+  cursor: pointer;
+}
+
+.calender-layout {
+  position: absolute;
+  right: 0px;
+  height: 1.75em;
+  align-self: center;
   cursor: pointer;
 }
 
