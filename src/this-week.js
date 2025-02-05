@@ -1,15 +1,20 @@
 // add previous and next week buttons on the top and bottom
 export {displayWeekTasks}
-import { format, isToday, isTomorrow, isYesterday, isSameDay, startOfWeek, add, parseISO } from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday, isSameDay, startOfWeek, add, parseISO, addDays } from 'date-fns';
 import { tasksData, dateAndTask } from './tasks-data.js';
 import {displayTask} from './display-tasks.js'
+import {changeHeader} from './sidebar.js'
 
 import arrowUpSVG from './images/arrow-up.svg'
 import arrowDownSVG from './images/arrow-down.svg'
+import calender from './images/calender.svg'
 
-function getThisWeekDates() {
+let plusMinusDays = 0
+
+
+function getThisWeekDates(today) {
     const thisWeek = []
-    const weekStart = startOfWeek(new Date(), {weekStartsOn: 1});
+    const weekStart = startOfWeek(today, {weekStartsOn: 1});
     for (let i = 0; i < 7; i++) {
         const date = add(weekStart, { days: i }); // Add 'i' days to the start of the week
         thisWeek.push(date);
@@ -17,8 +22,8 @@ function getThisWeekDates() {
     return thisWeek;
 }
 
-function sortTasksForWeekDates() {
-    const thisWeek = getThisWeekDates();
+function sortTasksForWeekDates(today) {
+    const thisWeek = getThisWeekDates(today);
     let weekTasks = []
     weekTasks = thisWeek.map(date => new dateAndTask(date));
     tasksData.forEach(task => {
@@ -32,8 +37,8 @@ function sortTasksForWeekDates() {
     return weekTasks
 }
 
-function displayWeekTasks() {
-    const weekTasks = sortTasksForWeekDates();
+function displayWeekTasks(today) {
+    const weekTasks = sortTasksForWeekDates(today);
     console.log(weekTasks);
     weekTasks.forEach(dateTask => {
         const day = document.createElement('div');
@@ -76,5 +81,10 @@ function addArrows() {
 }
 
 function weekUpClicked() {
-    console.log('week up')
+    if (event.target.closest('.up-arrow')) {plusMinusDays -= 7}
+    else if (event.target.closest('.down-arrow')) {plusMinusDays += 7}
+    document.querySelector('.task-list').textContent = ''; changeHeader('Entire Week\'s Task List', calender);
+    const nextWeek = addDays(new Date(), plusMinusDays)
+    console.log(nextWeek)
+    displayWeekTasks(nextWeek)
 }
