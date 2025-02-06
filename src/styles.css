@@ -228,7 +228,7 @@ img.task-complete-icon {
 .calender-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, minmax(calc(80vh/5), 1fr));
+  grid-template-rows: repeat(6, minmax(7.5em, auto));
   height: 100%;
 }
 
@@ -320,6 +320,18 @@ img.task-complete-icon {
   cursor: pointer;
 }
 
+.sidebar-display-option {
+  height: 1.5em;
+  cursor: pointer;
+  position: absolute;
+  left: 5px;
+  top: 6em;
+}
+
+.disable-sidebar {
+  display: none;
+  grid-column: 0 / 0;
+}
 
 /* Entire scrollbar container */
 ::-webkit-scrollbar {

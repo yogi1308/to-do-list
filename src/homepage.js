@@ -1,6 +1,7 @@
 import { tasks, tasksData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
+import sidebar from './images/sidebar.svg'
 
 let currentDate = new Date()
 console.log(currentDate)
@@ -14,6 +15,7 @@ function homePage() {
     displayTaskList()
     displayTodayTasks()
     window.addEventListener('resize', adjustAddTaskDivWidth);
+    sidebarDisplayOption()
 }
 
 function taskBar() {
@@ -63,4 +65,18 @@ function addTaskFunction(taskName) {
     main.removeChild(taskList);
     displayTaskList();
     console.log(tasksData);
+}
+
+function sidebarDisplayOption() {
+    const main = document.querySelector('#main')
+    const sidebarDisplay = document.createElement('img')
+    sidebarDisplay.src = sidebar
+    sidebarDisplay.classList.add('sidebar-display-option')
+    sidebarDisplay.addEventListener('click', retractSidebar)
+    main.appendChild(sidebarDisplay)
+}
+
+function retractSidebar() {
+    if (!document.querySelector('#sidebar').classList.contains('disable-sidebar')) {document.querySelector('#sidebar').classList.add('disable-sidebar'); document.querySelector('#content').style.display = 'block'; document.querySelector('#main').style.height = '100%'; adjustAddTaskDivWidth(); document.querySelector('#main').style.overflowY = 'auto';}
+    else {document.querySelector('#sidebar').classList.remove('disable-sidebar');document.querySelector('#content').style.display = 'grid'; adjustAddTaskDivWidth()}
 }
