@@ -68,15 +68,37 @@ function addTaskFunction(taskName) {
 }
 
 function sidebarDisplayOption() {
-    const main = document.querySelector('#main')
-    const sidebarDisplay = document.createElement('img')
-    sidebarDisplay.src = sidebar
-    sidebarDisplay.classList.add('sidebar-display-option')
-    sidebarDisplay.addEventListener('click', retractSidebar)
-    main.appendChild(sidebarDisplay)
+    const sidebarDiv = document.querySelector('#sidebar');
+    const sidebarDisplay = document.createElement('img');
+    sidebarDisplay.src = sidebar;
+    sidebarDisplay.classList.add('sidebar-display-option');
+    sidebarDisplay.addEventListener('click', retractSidebar);
+    sidebarDiv.appendChild(sidebarDisplay);
 }
 
-function retractSidebar() {
-    if (!document.querySelector('#sidebar').classList.contains('disable-sidebar')) {document.querySelector('#sidebar').classList.add('disable-sidebar'); document.querySelector('#content').style.display = 'block'; document.querySelector('#main').style.height = '100%'; adjustAddTaskDivWidth(); document.querySelector('#main').style.overflowY = 'auto';}
-    else {document.querySelector('#sidebar').classList.remove('disable-sidebar');document.querySelector('#content').style.display = 'grid'; adjustAddTaskDivWidth()}
+function retractSidebar(event) {
+    const sidebar = document.querySelector('#sidebar');
+    const main = document.querySelector('#main');
+    const clickedIcon = event.target;
+
+    if (!sidebar.classList.contains('disable-sidebar')) {
+        // Retract sidebar and move icon to main
+        sidebar.classList.add('disable-sidebar');
+        document.querySelector('#content').style.display = 'block';
+        document.querySelector('#main').style.height = '100%';
+        document.querySelector('#main').style.overflowY = 'auto';
+        
+        // Move icon to main and add special class
+        main.appendChild(clickedIcon);
+        clickedIcon.classList.add('sidebar-remove-icon-when-sidebar-is-removed');
+    } else {
+        // Restore sidebar and move icon back
+        sidebar.classList.remove('disable-sidebar');
+        document.querySelector('#content').style.display = 'grid';
+        
+        // Move icon back to sidebar and remove special class
+        sidebar.appendChild(clickedIcon);
+        clickedIcon.classList.remove('sidebar-remove-icon-when-sidebar-is-removed');
+    }
+    adjustAddTaskDivWidth();
 }

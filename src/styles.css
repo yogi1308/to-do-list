@@ -324,13 +324,19 @@ img.task-complete-icon {
   height: 1.5em;
   cursor: pointer;
   position: absolute;
-  left: 5px;
-  top: 6em;
+  right: 5px;
+  top: 0.25em;
 }
 
 .disable-sidebar {
   display: none;
   grid-column: 0 / 0;
+}
+
+.sidebar-remove-icon-when-sidebar-is-removed {
+  position: fixed;
+  left: 5px;
+  top: 0.25em;
 }
 
 /* Entire scrollbar container */
