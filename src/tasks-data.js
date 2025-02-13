@@ -1,5 +1,5 @@
-export const tasks = function (task, priority, group, date, repeat, important, completed) {
-  return { task, priority, group, date, repeat, important, completed };
+export const tasks = function (task, priority, list, date, repeat, important, completed) {
+  return { task, priority, list, date, repeat, important, completed };
 };
 
 export class dateAndTask {

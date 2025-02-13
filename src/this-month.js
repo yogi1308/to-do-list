@@ -24,8 +24,9 @@ function displayMonthTasks(currentDate) {
 
     tasksData.forEach((task) => {
         // Split the date string
+        let year, taskMonth, taskDate;
         if (task.date != undefined) {
-            if (task.date) {[year, taskMonth, taskDate] = task.date.split("-");} // Split by space
+            if (task.date) {[year, taskMonth, taskDate] = task.date.trim().split("-");} // Split by space
             taskMonth = determineMonth(taskMonth)
             taskDate = determineDate(taskDate)
             if (taskMonth == format(currentDate, 'MMMM') || taskMonth == format(subMonths(currentDate, 1), 'MMMM') || taskMonth == format(addMonths(currentDate, 1), 'MMMM')) {

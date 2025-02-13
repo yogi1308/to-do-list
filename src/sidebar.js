@@ -26,7 +26,7 @@ import {displayMonthTasks, setPlusMinusMonthsToZero} from './this-month.js'
 import {displayTodayTasks} from './my-day.js'
 import {displayTask} from './display-tasks.js'
 
-export { sidebar, displayTask, view, changeHeader };
+export { sidebar, displayTask, view, changeHeader, chooseDisplay, displayLists, dispalyAddListsAndLabels};
 
 let view = ''
 let priorityDisplayListView = false;
@@ -87,7 +87,7 @@ function displayLists() {
     groupDiv.style.height = `calc(100vh - 2.5em - ${document.querySelector('.sidebar-list').clientHeight}px)`;
     const groupArray = []
     tasksData.forEach(task => {
-        if (!groupArray.includes(task.group)) {groupArray.push(task.group);}
+        if (!groupArray.includes(task.list)) {groupArray.push(task.list);}
     });
     
     groupArray.forEach(group => {
@@ -103,13 +103,14 @@ function displayLists() {
         taskGroup.addEventListener('click', groupSort)
     })
     sidebar.appendChild(groupDiv);
+    groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
 }
 
 function groupSort(event) {
     const group = event.target.closest('.taskGroup').querySelector('p').textContent;
     document.querySelector('.task-list').textContent = ''
     tasksData.forEach(task => {
-        if (task.group == group) {displayTask(task);}
+        if (task.list == group) {displayTask(task);}
     });
     changeHeader(group, listIcon)
 }
@@ -118,8 +119,8 @@ function chooseDisplay(item) {
     if (item == 'My Day') {document.querySelector('.task-list').textContent = ''; document.querySelector('#main').removeChild(document.querySelector('.header')); header();displayTodayTasks()}
     else if (item == 'Important') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
     else if (item == 'Completed') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
-    else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all)}
-    else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;}}
+    else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all); view = 'All'}
+    else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - 2.5em${document.querySelector('.sidebar-list').clientHeight}px)`;}}
     else if (item == 'This Week') {document.querySelector('.task-list').textContent = ''; changeHeader(item, calender); displayWeekTasks(currentDate);view = 'This Week'}
     else if (item == 'This Month') {document.querySelector('.task-list').textContent = ''; changeHeader(item, monthCalender); view = 'This Month'; setPlusMinusMonthsToZero(); displayMonthTasks(currentDate);}
 }
@@ -159,7 +160,7 @@ function choosePriorityDisplayList() {
     dropdownIcon.src = up;
 
     const groupDiv = document.querySelector('.groupDiv');
-    groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;
+    groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
 }
 
 function displayPriorityTasks(event){

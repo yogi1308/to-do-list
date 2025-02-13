@@ -1,17 +1,24 @@
 import { tasks, tasksData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
-import sidebar from './images/sidebar.svg'
+import sidebarIcon from './images/sidebar.svg'
 import flag from './images/flag.svg';
 import blueFlag from './images/blue-flag.svg';
 import redFlag from './images/red-flag.svg';
 import orangeFlag from './images/orange-flag.svg';
+import star from './images/star.svg'
+import filledStar from './images/filled-star.svg'
+import {chooseDisplay, displayLists, dispalyAddListsAndLabels} from './sidebar.js'
 
 let currentDate = new Date()
 console.log(currentDate)
 let currentDay = format(currentDate, 'eeee')
 export {homePage, header, currentDate, currentDay}
 let priority = ''
+let important = undefined
+let list = 'Tasks'
+let date = undefined
+let repeat = undefined
 
 function homePage() {
     console.log('home page');
@@ -34,6 +41,12 @@ function taskBar() {
     addtaskDiv.style.width = (main.clientWidth * 0.9) + 'px';
     addTask.style.width = '100%';
     addtaskDiv.appendChild(addTask);
+
+    const starIcon = document.createElement('img')
+    starIcon.src = star
+    starIcon.classList.add('input-star')
+    starIcon.addEventListener('click', inputStarClicked)
+    addtaskDiv.appendChild(starIcon)
 
     const flagIcon = document.createElement('img')
     flagIcon.src = flag
@@ -69,7 +82,7 @@ function header() {
 
 function addTaskFunction(taskName) {
     const addTask = document.querySelector('#add-task');
-    tasksData.push(tasks(addTask.value, priority));
+    tasksData.push(tasks(addTask.value, priority, list, date, repeat, important));
     addTask.value = taskName;
     const taskList = document.querySelector('.task-list');
     const main = document.querySelector('#main');
@@ -77,12 +90,24 @@ function addTaskFunction(taskName) {
     displayTaskList();
     console.log(tasksData);
     document.querySelector('img.input-flag').src = flag
+    document.querySelector('img.input-star').src = star
+    priority = ''
+    important = undefined
+    list = 'Tasks'
+    date = undefined
+    repeat = undefined
+    let view = document.querySelector('.header > h2').textContent
+    chooseDisplay(view);
+    document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
+    document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
+    displayLists()
+    dispalyAddListsAndLabels()
 }
 
 function sidebarDisplayOption() {
     const sidebarDiv = document.querySelector('#sidebar');
     const sidebarDisplay = document.createElement('img');
-    sidebarDisplay.src = sidebar;
+    sidebarDisplay.src = sidebarIcon;
     sidebarDisplay.classList.add('sidebar-display-option');
     sidebarDisplay.addEventListener('click', retractSidebar);
     sidebarDiv.appendChild(sidebarDisplay);
@@ -152,4 +177,18 @@ function prioritySelected(event) {
     }
     console.log(priority)
     document.getElementById('priority-dropdown').classList.add('hidden')
+}
+
+function inputStarClicked() {
+    const starIcon = document.querySelector('.input-star')
+    if (!starIcon.classList.contains('filled')) {
+        starIcon.src = filledStar
+        important = true
+        starIcon.classList.add('filled')
+    }
+    else if(starIcon.classList.contains('.filled')) {
+        starIcon.src = star
+        important = false
+        starIcon.classList.remove('filled')
+    }
 }

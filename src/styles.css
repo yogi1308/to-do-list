@@ -106,6 +106,9 @@
 .input-flag {
   background-color: #3b3b3b;
   cursor: pointer;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding-right: 5px;
 }
 
 body {
@@ -121,13 +124,14 @@ body {
   cursor: pointer;
   transition: background 0.2s;
   background-color: #3b3b3b;
-  border: 2px solid black;
+  border: 2px solid #1c1c1c;
 }
 
 .dropdown {width: fit-content;}
 
 .hidden {display: none;}
 
+.input-star {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
 
 input::placeholder {
   color: #788cde; /* Change this to your desired color */
