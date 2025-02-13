@@ -12,6 +12,17 @@ export class dateAndTask {
   }
 }
 
+export class lists {
+  tasks = []
+  constructor(name = 'Untitled List', label = 'Tasks') {
+    this.name = name
+    this.label = label
+    listsData.push(this)
+  }
+}
+
+export const listsData = []
+
 // Fake tasks data with some tasks having no priority
 export const tasksData = [
   // tasks("Complete JavaScript homework", "High", "Academics", "2025-01-30", "No", true, false),

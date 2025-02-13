@@ -5,7 +5,7 @@ import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
-import { tasksData } from './tasks-data.js';
+import { tasksData, lists, listsData } from './tasks-data.js';
 import listIcon from './images/group.svg'
 import {header} from './homepage.js';
 import flag from './images/flag.svg';
@@ -86,17 +86,17 @@ function displayLists() {
     groupDiv.classList.add('groupDiv')
     groupDiv.style.height = `calc(100vh - 2.5em - ${document.querySelector('.sidebar-list').clientHeight}px)`;
     const groupArray = []
-    tasksData.forEach(task => {
-        if (!groupArray.includes(task.list)) {groupArray.push(task.list);}
+    listsData.forEach(list => {
+        if (!groupArray.includes(list)) {groupArray.push(list);}
     });
     
-    groupArray.forEach(group => {
+    groupArray.forEach(list => {
         const taskGroup = document.createElement('div');
         taskGroup.classList.add('taskGroup');
         const groupIcon = document.createElement('img');
         groupIcon.src = listIcon;
         const groupName = document.createElement('p');
-        groupName.textContent = group;
+        groupName.textContent = list.name;
         taskGroup.appendChild(groupIcon);
         taskGroup.appendChild(groupName);
         groupDiv.appendChild(taskGroup);
@@ -195,7 +195,12 @@ function dispalyAddListsAndLabels() {
 }
 
 function addList() {
-
+    let newList = new lists()
+    console.log(listsData)
+    document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
+    document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
+    displayLists()
+    dispalyAddListsAndLabels()
 }
 
 function addLabel() {
