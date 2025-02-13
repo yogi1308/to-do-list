@@ -168,10 +168,13 @@ function displayPriorityTasks(event){
     document.querySelector('.task-list').textContent = '';
     tasksData.forEach(task => {
         if (task.priority == priorityType) {
-            displayTask(task) ;changeHeader(priorityType + ' Priority', flag); view = 'Priority';
+            displayTask(task) ;
         }
     }
     )
+    if (priorityType == 'Low') {changeHeader(priorityType + ' Priority', blueFlag); view = 'Priority';}
+    else if (priorityType == 'Medium') {changeHeader(priorityType + ' Priority', orangeFlag); view = 'Priority';}    
+    else if (priorityType == 'High') {changeHeader(priorityType + ' Priority', redFlag); view = 'Priority';}
 }
 
 function dispalyAddListsAndLabels() {
