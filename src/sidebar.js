@@ -16,6 +16,9 @@ import down from './images/down.svg';
 import up from './images/up.svg';
 import calender from './images/calender.svg'
 import monthCalender from './images/month-calender.svg'
+import addIcon from './images/add.svg'
+import newLabel from './images/new-label.svg'
+import homeIcon from './images/home.svg'
 
 import { currentDate } from './homepage.js';
 import {displayWeekTasks} from './this-week.js'
@@ -74,13 +77,14 @@ function sidebarItems() {
         }
     });
     displayLists()
+    dispalyAddListsAndLabels()
 }
 
 function displayLists() {
     const sidebar = document.querySelector('#sidebar')
     const groupDiv = document.createElement('div')
     groupDiv.classList.add('groupDiv')
-    groupDiv.style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px)`;
+    groupDiv.style.height = `calc(100vh - 2.5em - ${document.querySelector('.sidebar-list').clientHeight}px)`;
     const groupArray = []
     tasksData.forEach(task => {
         if (!groupArray.includes(task.group)) {groupArray.push(task.group);}
@@ -167,5 +171,30 @@ function displayPriorityTasks(event){
         }
     }
     )
+}
+
+function dispalyAddListsAndLabels() {
+    const sidebar = document.querySelector('#sidebar');
+    const sidebarFooter = document.createElement('div');
+    sidebarFooter.classList.add('sidebar-footer')
+    const newList = document.createElement('img');
+    newList.src = addIcon;
+    newList.classList.add('new-list');
+    newList.addEventListener('click', addList);
+    sidebarFooter.appendChild(newList);
+    const newLabelIcon = document.createElement('img');
+    newLabelIcon.src = newLabel;
+    newLabelIcon.classList.add('new-group');
+    newLabelIcon.addEventListener('click', addLabel);
+    sidebarFooter.appendChild(newLabelIcon);
+    sidebar.appendChild(sidebarFooter)
+}
+
+function addList() {
+
+}
+
+function addLabel() {
+
 }
 

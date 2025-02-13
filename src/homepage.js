@@ -2,11 +2,16 @@ import { tasks, tasksData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
 import sidebar from './images/sidebar.svg'
+import flag from './images/flag.svg';
+import blueFlag from './images/blue-flag.svg';
+import redFlag from './images/red-flag.svg';
+import orangeFlag from './images/orange-flag.svg';
 
 let currentDate = new Date()
 console.log(currentDate)
 let currentDay = format(currentDate, 'eeee')
 export {homePage, header, currentDate, currentDay}
+let priority = ''
 
 function homePage() {
     console.log('home page');
@@ -29,6 +34,12 @@ function taskBar() {
     addtaskDiv.style.width = (main.clientWidth * 0.9) + 'px';
     addTask.style.width = '100%';
     addtaskDiv.appendChild(addTask);
+
+    const flagIcon = document.createElement('img')
+    flagIcon.src = flag
+    flagIcon.classList.add('input-flag')
+    flagIcon.addEventListener('click', inputFlagClicked)
+    addtaskDiv.appendChild(flagIcon)
     main.appendChild(addtaskDiv);
     addTask.addEventListener('keyup', (e) => {if (e.key === 'Enter') {addTaskFunction(addTask.textContent);}});
 }
@@ -58,13 +69,14 @@ function header() {
 
 function addTaskFunction(taskName) {
     const addTask = document.querySelector('#add-task');
-    tasksData.push(tasks(addTask.value));
+    tasksData.push(tasks(addTask.value, priority));
     addTask.value = taskName;
     const taskList = document.querySelector('.task-list');
     const main = document.querySelector('#main');
     main.removeChild(taskList);
     displayTaskList();
     console.log(tasksData);
+    document.querySelector('img.input-flag').src = flag
 }
 
 function sidebarDisplayOption() {
@@ -101,4 +113,43 @@ function retractSidebar(event) {
         clickedIcon.classList.remove('sidebar-remove-icon-when-sidebar-is-removed');
     }
     adjustAddTaskDivWidth();
+}
+
+function inputFlagClicked() {
+    event.stopPropagation();
+    const dropdown = document.getElementById('priority-dropdown');
+    if (dropdown.classList.contains('hidden')) {
+        // Temporarily display the dropdown to measure its height
+        dropdown.classList.remove('hidden');
+        const bottomPosition = document.querySelector('div.add-task-div').clientHeight + 'px'
+        dropdown.style.position = 'absolute'
+        dropdown.style.bottom = bottomPosition
+        dropdown.style.right = '5%'
+        document.querySelectorAll('.dropdown>ul>li').forEach(option => option.addEventListener('click', prioritySelected))
+        if (!dropdown.classList.contains('hidden')) {
+            document.addEventListener('click', (event)=> {
+                dropdown.classList.add('hidden');
+                document.removeEventListener('click', (event=> {document.removeEventListener()}));
+            });
+        }
+    } else {
+        dropdown.classList.add('hidden');
+    }
+}
+
+function prioritySelected(event) {
+    const chosenPriority = event.currentTarget.querySelector('span').textContent
+    priority = chosenPriority.split(' ')[0]
+    const flagIcon = document.querySelector('img.input-flag')
+    if (priority == 'Low') {
+        flagIcon.src = blueFlag
+    }
+    else if (priority == 'Medium') {
+        flagIcon.src = orangeFlag
+    }
+    else if (priority == 'High') {
+        flagIcon.src = redFlag
+    }
+    console.log(priority)
+    document.getElementById('priority-dropdown').classList.add('hidden')
 }

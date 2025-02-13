@@ -85,8 +85,10 @@
   background-color: #3b3b3b;
   border: none;
   padding: 5px 10px;
-  border-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
   color: #788cde;
+  outline: none;
 }
 
 .add-task-div{
@@ -98,7 +100,33 @@
   padding-bottom: 20px;
   backdrop-filter: blur(10px);
   z-index: 100;
+  display: flex;
 }
+
+.input-flag {
+  background-color: #3b3b3b;
+  cursor: pointer;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.dropdown ul li {
+  display: flex;        /* So icon and text can be side by side */
+  align-items: center;  /* Vertically center the icon and text */
+  gap: 8px;             /* Space between icon and text */
+  padding: 8px 12px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  background-color: #3b3b3b;
+  border: 2px solid black;
+}
+
+.dropdown {width: fit-content;}
+
+.hidden {display: none;}
 
 
 input::placeholder {
@@ -337,6 +365,21 @@ img.task-complete-icon {
   position: fixed;
   left: 5px;
   top: 0.25em;
+}
+
+.sidebar-footer {
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  bottom: 0px;
+  border-top: 2px solid #3b3b3b;
+  background-color: #232323;
+  padding: 0.5em;
+}
+
+.sidebar-footer > img {
+  height: 1.5em;
+  cursor: pointer;
 }
 
 /* Entire scrollbar container */

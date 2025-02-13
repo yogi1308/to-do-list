@@ -27,12 +27,14 @@ function sortTasksForWeekDates(today) {
     let weekTasks = []
     weekTasks = thisWeek.map(date => new dateAndTask(date));
     tasksData.forEach(task => {
-        const taskDate = parseISO(task.date); // Convert task date string to a Date object (if task.date is a string)
-        weekTasks.forEach(dateTask => {
-            if (isSameDay(dateTask.date, taskDate)) { // Use date-fns `isSameDay` to compare dates
-                dateTask.addTask(task); // Add the task name (or the entire task object) to the respective date
-            }
-        });
+        if (task.date != undefined) {
+            const taskDate = parseISO(task.date); // Convert task date string to a Date object (if task.date is a string)
+            weekTasks.forEach(dateTask => {
+                if (isSameDay(dateTask.date, taskDate)) { // Use date-fns `isSameDay` to compare dates
+                    dateTask.addTask(task); // Add the task name (or the entire task object) to the respective date
+                }
+            });
+        }
     });
     return weekTasks
 }

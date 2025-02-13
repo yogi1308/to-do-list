@@ -24,18 +24,20 @@ function displayMonthTasks(currentDate) {
 
     tasksData.forEach((task) => {
         // Split the date string
-        let [year, taskMonth, taskDate] = task.date.split("-"); // Split by space
-        taskMonth = determineMonth(taskMonth)
-        taskDate = determineDate(taskDate)
-        if (taskMonth == format(currentDate, 'MMMM') || taskMonth == format(subMonths(currentDate, 1), 'MMMM') || taskMonth == format(addMonths(currentDate, 1), 'MMMM')) {
-            const calendarCell = document.querySelector(`.${taskMonth}-${year}-${taskDate}`);
-            // If the div exists, assign the task text to it
-            if (calendarCell) {
-                const calendarTextContent = calendarCell.querySelector('.calender-text-content');
-                const monthTask = document.createElement('p')
-                monthTask.textContent = task.task
-                calendarTextContent.appendChild(monthTask)
-            }
+        if (task.date != undefined) {
+            if (task.date) {[year, taskMonth, taskDate] = task.date.split("-");} // Split by space
+            taskMonth = determineMonth(taskMonth)
+            taskDate = determineDate(taskDate)
+            if (taskMonth == format(currentDate, 'MMMM') || taskMonth == format(subMonths(currentDate, 1), 'MMMM') || taskMonth == format(addMonths(currentDate, 1), 'MMMM')) {
+                const calendarCell = document.querySelector(`.${taskMonth}-${year}-${taskDate}`);
+                // If the div exists, assign the task text to it
+                if (calendarCell) {
+                    const calendarTextContent = calendarCell.querySelector('.calender-text-content');
+                    const monthTask = document.createElement('p')
+                    monthTask.textContent = task.task
+                    calendarTextContent.appendChild(monthTask)
+                }
+            }   
         }
     });
 

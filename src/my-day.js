@@ -6,6 +6,8 @@ export { displayTodayTasks }
 
 function displayTodayTasks() {
     tasksData.forEach(task => {
-        if (isToday(parseISO(task.date))) {displayTask(task);}
+        if (task.date != undefined) {
+            if (isToday(parseISO(task.date))) {displayTask(task);}
+        }
     });
 }
