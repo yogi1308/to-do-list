@@ -221,21 +221,27 @@ function addList() {
     
 
 function setLatestListName() {
-    const textarea = document.querySelector('textarea')
-    const newTitle = textarea.value.trim();
-        if (newTitle) {
-            listsData[listsData.length - 1].name = newTitle;
-            const newTitleElement = document.createElement("p");
-            newTitleElement.textContent = newTitle;
-            newTitleElement.style.wordBreak = "break-word";
-            if (textarea) {textarea.replaceWith(newTitleElement)}
-        } 
-        else {
-            // If the new title is empty, revert to the original title
-            textarea.replaceWith(titleElement)
-        }
+    const textarea = document.querySelector('textarea');
+    const baseTitle = textarea.value.trim();
+    if (baseTitle) {
+        // Start with the base title
+        let newTitle = baseTitle;
+        let suffix = 1;
+        // Check other lists (all except the new one at the end)
+        while (listsData.slice(0, listsData.length - 1).some(list => list.name === newTitle)) {newTitle = `${baseTitle} (${suffix})`;suffix++;}
+        listsData[listsData.length - 1].name = newTitle;
+        const newTitleElement = document.createElement("p");
+        newTitleElement.textContent = newTitle;
+        newTitleElement.style.wordBreak = "break-word";
+        textarea.replaceWith(newTitleElement);
+    } else {
+      // If the new title is empty, revert to the original title (assuming titleElement exists)
+        textarea.replaceWith(titleElement);
+    }
+    // Remove the event listener (if necessary)
     textarea.removeEventListener('keypress', setLatestListName);
 }
+  
 
 function addLabel() {
 
