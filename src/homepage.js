@@ -42,6 +42,14 @@ function taskBar() {
     addTask.style.width = '100%';
     addtaskDiv.appendChild(addTask);
 
+    const inputCalender = document.createElement('input')
+    inputCalender.type = 'date'
+    inputCalender.style.backgroundColor = '#3b3b3b'
+    inputCalender.style.color = 'white'
+    inputCalender.style.border = 'none'
+    inputCalender.addEventListener('change', (event) => {date = event.target.value;console.log(date); inputCalenderClicked(inputCalender)});
+    addtaskDiv.appendChild(inputCalender)
+
     const starIcon = document.createElement('img')
     starIcon.src = star
     starIcon.classList.add('input-star')
@@ -102,6 +110,7 @@ function addTaskFunction(taskName) {
     document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
     displayLists()
     dispalyAddListsAndLabels()
+    removeDateFromTaskabar()
 }
 
 function sidebarDisplayOption() {
@@ -186,9 +195,43 @@ function inputStarClicked() {
         important = true
         starIcon.classList.add('filled')
     }
-    else if(starIcon.classList.contains('.filled')) {
+    else if(starIcon.classList.contains('filled')) {
         starIcon.src = star
         important = false
         starIcon.classList.remove('filled')
     }
 }
+
+function inputCalenderClicked(inputCalender) {
+    // Remove any previously injected style (if present)
+    const existingStyle = document.getElementById('date-valid-styles');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+    
+    // Check if a valid date has been selected
+    if (event.target.value) {
+        // Create a new style element with your desired CSS rules
+        const styleEl = document.createElement('style');
+        styleEl.id = 'date-valid-styles';
+        styleEl.textContent = `
+        input[type="date"]:valid::-webkit-datetime-edit,
+        input[type="date"]:valid::-webkit-datetime-edit-year-field,
+        input[type="date"]:valid::-webkit-datetime-edit-month-field,
+        input[type="date"]:valid::-webkit-datetime-edit-day-field {
+            color: #fff;
+            display: contents;
+        }
+        `;
+        // Append the style element to the document head
+        document.head.appendChild(styleEl);
+    }
+}
+
+function removeDateFromTaskabar() {
+    const existingStyle = document.getElementById('date-valid-styles');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+}
+

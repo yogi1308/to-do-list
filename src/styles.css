@@ -131,7 +131,7 @@ body {
 
 .hidden {display: none;}
 
-.input-star {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
+.input-star, .input-calender {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
 
 input::placeholder {
   color: #788cde; /* Change this to your desired color */
@@ -143,6 +143,41 @@ input::placeholder {
   gap: 5px;
 
 }
+
+/* Base styling for the date input */
+input[type="date"] {
+  background-color: #222;    /* Dark background */
+  border: 1px solid #444;
+  padding: 8px;
+  font-size: 16px;
+  color: transparent;         /* Hide text initially */
+  /* Use text-shadow to fake white text so that the cursor is visible */
+  text-shadow: 0 0 0 #fff;
+  outline: none;
+}
+
+/* When the input is focused or becomes valid (i.e. a date is chosen),
+   show the actual date in white */
+input[type="date"]:focus,
+input[type="date"]:valid {
+  color: #fff;
+  text-shadow: none;
+}
+
+/* Hide the default placeholder text (parts of the date) */
+input[type="date"]::-webkit-datetime-edit {
+  color: transparent;
+  display: none
+}
+
+/* Customize the calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) invert(1); /* Makes the icon white */
+  transform: scale(1.3);           /* Increases the icon's size */
+  cursor: pointer;
+  padding-left: .65em;
+}
+
 
 .task-item {
   background-color: #363636;
