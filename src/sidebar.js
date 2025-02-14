@@ -104,15 +104,20 @@ function displayLists() {
     })
     sidebar.appendChild(groupDiv);
     groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
+    document.querySelector('.groupDiv').firstChild.querySelector('img').src = homeIcon
+    return groupDiv
 }
 
-function groupSort(event) {
-    const group = event.target.closest('.taskGroup').querySelector('p').textContent;
+export function groupSort(event) {
+    let list = '';
+    if (event == document.querySelector('.header > h2').textContent) {list = event}
+    else {list = event.target.closest('.taskGroup').querySelector('p').textContent;}
     document.querySelector('.task-list').textContent = ''
     tasksData.forEach(task => {
-        if (task.list == group) {displayTask(task);}
+        if (task.list.name == list) {displayTask(task);}
     });
-    changeHeader(group, listIcon)
+    if (list == 'Tasks') {changeHeader(list, homeIcon)}
+    else {changeHeader(list, listIcon)}
 }
 
 function chooseDisplay(item) {

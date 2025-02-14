@@ -22,6 +22,7 @@ export class lists {
 }
 
 export const listsData = []
+listsData.push(new lists('Tasks'))
 
 // Fake tasks data with some tasks having no priority
 export const tasksData = [

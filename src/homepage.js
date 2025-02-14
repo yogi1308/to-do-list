@@ -1,4 +1,4 @@
-import { tasks, tasksData } from './tasks-data.js';
+import { tasks, tasksData, listsData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
 import sidebarIcon from './images/sidebar.svg'
@@ -8,7 +8,8 @@ import redFlag from './images/red-flag.svg';
 import orangeFlag from './images/orange-flag.svg';
 import star from './images/star.svg'
 import filledStar from './images/filled-star.svg'
-import {chooseDisplay, displayLists, dispalyAddListsAndLabels} from './sidebar.js'
+import listIcon from './images/group.svg'
+import {chooseDisplay, displayLists, dispalyAddListsAndLabels, groupSort} from './sidebar.js'
 
 let currentDate = new Date()
 console.log(currentDate)
@@ -16,7 +17,7 @@ let currentDay = format(currentDate, 'eeee')
 export {homePage, header, currentDate, currentDay}
 let priority = ''
 let important = undefined
-let list = 'Tasks'
+let list = listsData.find(item => item.name === 'Tasks');
 let date = undefined
 let repeat = undefined
 
@@ -41,6 +42,15 @@ function taskBar() {
     addtaskDiv.style.width = (main.clientWidth * 0.9) + 'px';
     addTask.style.width = '100%';
     addtaskDiv.appendChild(addTask);
+
+    const taskbarListIcon = document.createElement('img')
+    const taskbarListName = document.createElement('p')
+    taskbarListIcon.src = listIcon
+    taskbarListIcon.classList.add('input-list')
+    taskbarListName.classList.add('input-list-name')
+    taskbarListIcon.addEventListener('click', inputlistClicked)
+    addtaskDiv.appendChild(taskbarListName)
+    addtaskDiv.appendChild(taskbarListIcon)
 
     const inputCalender = document.createElement('input')
     inputCalender.type = 'date'
@@ -99,18 +109,20 @@ function addTaskFunction(taskName) {
     console.log(tasksData);
     document.querySelector('img.input-flag').src = flag
     document.querySelector('img.input-star').src = star
+    let view = document.querySelector('.header > h2').textContent
+    if (listsData.find(list => list.name === view)) {groupSort(view);}
+    chooseDisplay(view);
     priority = ''
     important = undefined
-    list = 'Tasks'
+    list = listsData.find(item => item.name === 'Tasks');
     date = undefined
     repeat = undefined
-    let view = document.querySelector('.header > h2').textContent
-    chooseDisplay(view);
     document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
     document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
     displayLists()
     dispalyAddListsAndLabels()
     removeDateFromTaskabar()
+    if (document.querySelector('.list-name')) {document.querySelector('div.add-task-div').removeChild(document.querySelector('.list-name'))}
 }
 
 function sidebarDisplayOption() {
@@ -152,6 +164,7 @@ function retractSidebar(event) {
 function inputFlagClicked() {
     event.stopPropagation();
     const dropdown = document.getElementById('priority-dropdown');
+    const list = document.querySelector('#priority-dropdown>ul')
     if (dropdown.classList.contains('hidden')) {
         // Temporarily display the dropdown to measure its height
         dropdown.classList.remove('hidden');
@@ -159,6 +172,8 @@ function inputFlagClicked() {
         dropdown.style.position = 'absolute'
         dropdown.style.bottom = bottomPosition
         dropdown.style.right = '5%'
+        list.style.padding = '0px'
+        list.style.width = 'fit-content'
         document.querySelectorAll('.dropdown>ul>li').forEach(option => option.addEventListener('click', prioritySelected))
         if (!dropdown.classList.contains('hidden')) {
             document.addEventListener('click', (event)=> {
@@ -225,6 +240,7 @@ function inputCalenderClicked(inputCalender) {
         `;
         // Append the style element to the document head
         document.head.appendChild(styleEl);
+        document.querySelector('.input-list').style.paddingRight = '0.5em'
     }
 }
 
@@ -233,5 +249,99 @@ function removeDateFromTaskabar() {
     if (existingStyle) {
         existingStyle.remove();
     }
+    document.querySelector('.input-list').style.paddingRight = '0px'
 }
 
+function inputlistClicked(event) {
+    console.log('clcicke')
+    document.addEventListener('click', handleClickOutside, true);
+    const listDropdownMenu = document.createElement('ul');
+    listDropdownMenu.classList.add('list-selector')
+    const chooseList = displayLists();
+    chooseList.style.position = 'fixed';
+    chooseList.style.bottom = `calc(${document.querySelector('div.add-task-div').clientHeight}px + 3px)`;
+    chooseList.style.right = `calc(5% + 4 * 0.5em + 20px)`;
+    chooseList.style.height = 'auto';
+    chooseList.style.border = '1px solid #3b3b3b';
+    chooseList.style.borderRadius = '8px';  
+    chooseList.querySelectorAll('*').forEach(child => {child.removeEventListener('click', groupSort);});
+    chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
+    listDropdownMenu.appendChild(chooseList);
+    document.querySelector('#main').appendChild(listDropdownMenu);
+}
+
+function handleClickOutside(e) {
+    if (!document.querySelector('#main > ul > div.groupDiv').contains(e.target)) {
+        document.querySelector('#main').removeChild(document.querySelector('#main>ul>div.groupDiv').parentNode);
+        document.removeEventListener('click', handleClickOutside, true);
+    }
+    else {document.removeEventListener('click', handleClickOutside, true);}
+}
+
+function listSelected() {
+    if (document.querySelector('.list-name')) {document.querySelector('div.add-task-div').removeChild(document.querySelector('.list-name'));}
+    list = listsData.find(item => item.name === event.target.closest('p').textContent)
+    const listDropdownMenu = document.querySelector('#main>ul>div.groupDiv').parentNode;
+    document.querySelector('#main').removeChild(listDropdownMenu);
+    const listName = document.createElement('p')
+    listName.textContent = list.name
+    listName.style.padding = '5px'
+    listName.style.backgroundColor = '#3b3b3b'
+    listName.classList.add('list-name')
+    document.querySelector('div.add-task-div').insertBefore(listName, document.querySelector('div.add-task-div').children[1])
+    document.querySelector('#add-task').focus()
+    document.removeEventListener('click', handleClickOutside, true)
+}
+
+// function inputlistClicked(event) {
+//     // Prevent the current click event from propagating further.
+//     event.stopPropagation();
+//     if (!document.querySelector('#main > ul > div.groupDiv')) {
+//         const listDropdownMenu = document.createElement('ul');
+//         const chooseList = displayLists();
+//         chooseList.style.position = 'fixed';
+//         chooseList.style.bottom = `calc(${document.querySelector('div.add-task-div').clientHeight}px + 3px)`;
+//         chooseList.style.right = `calc(5% + 4 * 0.5em + 20px)`;
+//         chooseList.style.height = 'auto';
+//         chooseList.style.border = '1px solid #3b3b3b';
+//         chooseList.style.borderRadius = '8px';  
+//         chooseList.querySelectorAll('*').forEach(child => {child.removeEventListener('click', groupSort);});
+//         chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
+//         listDropdownMenu.appendChild(chooseList);
+//         document.querySelector('#main').appendChild(listDropdownMenu);
+//         document.addEventListener('click', handleClickOutside, true);
+//     }
+//     else if (document.querySelector('#main > ul > div.groupDiv')) {
+//         if (document.querySelector('#main > ul').classList.contains('hidden')) {
+//             document.querySelector('#main > ul').classList.remove('hidden')
+//             document.querySelector('#main > ul > div.groupDiv').style.display = 'block'
+//             document.addEventListener('click', handleClickOutside, true);
+//         }
+//     }
+//     // This listener uses capturing so it won't catch the event that opened the dropdown.
+//     function handleClickOutside(e) {
+//         if (!document.querySelector('#main > ul > div.groupDiv').contains(e.target)) {
+//         document.querySelector('#main > ul').classList.add('hidden');
+//         document.querySelector('#main > ul > div.groupDiv').querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.removeEventListener('click', listSelected);}});
+//         document.removeEventListener('click', handleClickOutside, true);
+//     }
+//     }
+// }
+ 
+// function listSelected() {
+//     if (document.querySelector('.list-name')) {document.querySelector('div.add-task-div').removeChild(document.querySelector('.list-name'));document.querySelector('#main > ul').classList.add('hidden'); document.querySelector('#add-task').focus(); document.querySelectorAll('#main > ul > div > p').forEach(element => {element.removeEventListener('click', listSelected)})}
+//     list = listsData.find(item => item.name === event.target.closest('p').textContent)
+//     const listDropdownMenu = document.querySelector('#main>ul>div.groupDiv').parentNode;
+//     const chooseList = document.querySelector('#main>ul>div.groupDiv')
+//     chooseList.style.display = 'none';
+//     chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.removeEventListener('click', listSelected);}});
+//     const listName = document.createElement('p')
+//     listName.textContent = list.name
+//     listName.style.padding = '5px'
+//     listName.style.backgroundColor = '#3b3b3b'
+//     listName.classList.add('list-name')
+//     document.querySelector('div.add-task-div').insertBefore(listName, document.querySelector('div.add-task-div').children[1])
+//     document.querySelector('#add-task').focus()
+// }
+
+// // fix when list is selected list menu should disappear and if you are viewing a list it should get updated with the addedtask
