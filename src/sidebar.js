@@ -201,6 +201,35 @@ function addList() {
     document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
     displayLists()
     dispalyAddListsAndLabels()
+    let lastList = document.querySelector('div.groupDiv').lastChild.querySelector('p')
+    const textarea = document.createElement("textarea");
+    textarea.value = 'Untitled List';
+    textarea.style.width = "100%";
+    textarea.style.height = "auto";
+    lastList.replaceWith(textarea)
+    textarea.focus();
+    textarea.select();
+    textarea.style.backgroundColor = '#3b3b3b'
+    textarea.style.color = 'white'
+    textarea.addEventListener("keypress", (event) => {if (event.key === 'Enter') {setLatestListName()}});
+}
+    
+
+function setLatestListName() {
+    const textarea = document.querySelector('textarea')
+    const newTitle = textarea.value.trim();
+        if (newTitle) {
+            listsData[listsData.length - 1].name = newTitle;
+            const newTitleElement = document.createElement("p");
+            newTitleElement.textContent = newTitle;
+            newTitleElement.style.wordBreak = "break-word";
+            if (textarea) {textarea.replaceWith(newTitleElement)}
+        } 
+        else {
+            // If the new title is empty, revert to the original title
+            textarea.replaceWith(titleElement)
+        }
+    textarea.removeEventListener('keypress', setLatestListName);
 }
 
 function addLabel() {
