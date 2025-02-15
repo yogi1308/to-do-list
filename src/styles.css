@@ -440,6 +440,11 @@ img.task-complete-icon {
   cursor: pointer;
 }
 
+textArea {
+  height: 0.5em;
+  border-radius: 8px;
+}
+
 /* Entire scrollbar container */
 ::-webkit-scrollbar {
     width: 5px; /* Adjust width for vertical scrollbars */
