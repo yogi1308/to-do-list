@@ -1,5 +1,5 @@
 import { tasksData } from './tasks-data.js';
-import {isToday, parseISO, isSameDay, isAfter, isWeekend, differenceInDays, differenceInMonths, differenceInYears} from 'date-fns'
+import {isToday, parseISO, isSameDay, isAfter, isWeekend, differenceInDays, differenceInMonths, differenceInYears, differenceInCalendarWeeks, differenceInCalendarMonths, differenceInCalendarYears} from 'date-fns'
 import {displayTask} from './display-tasks.js'
 
 export { displayTodayTasks,  isTaskScheduledForDate }
@@ -53,13 +53,49 @@ function isTaskScheduledForDate(task, dateToCheck) {
         
       default:
         // For custom intervals, assume the string is formatted like "custom:3"
-        if (task.repeat.startsWith("custom:")) {
-           const customDays = parseInt(task.repeat.split(":")[1], 10);
-           if (isNaN(customDays)) return false;
-           const diffDays = differenceInDays(dateToCheck, taskDate);
-           return diffDays >= 0 && diffDays % customDays === 0;
-        }
-        return false;
+        if (task.repeat.startsWith("Every")) {
+            const parts = task.repeat.split(" ");
+            if (parts.length < 3) return false;
+            const interval = parseInt(parts[1], 10);
+            const unit = parts[2].toLowerCase();
+            if (isNaN(interval)) return false;
+          
+            switch (unit) {
+              case "day":
+              case "days": {
+                const diffDays = differenceInDays(dateToCheck, taskDate);
+                return diffDays >= 0 && diffDays % interval === 0;
+              }
+              case "week":
+              case "weeks": {
+                // Only repeat on the same day-of-week as taskDate.
+                if (dateToCheck.getDay() !== taskDate.getDay()) return false;
+                const diffWeeks = differenceInCalendarWeeks(dateToCheck, taskDate);
+                return diffWeeks >= 0 && diffWeeks % interval === 0;
+              }
+              case "month":
+              case "months": {
+                // Only repeat on the same day-of-month.
+                if (dateToCheck.getDate() !== taskDate.getDate()) return false;
+                const diffMonths = differenceInCalendarMonths(dateToCheck, taskDate);
+                return diffMonths >= 0 && diffMonths % interval === 0;
+              }
+              case "year":
+              case "years": {
+                // Only repeat on the same month and day.
+                if (
+                  dateToCheck.getDate() !== taskDate.getDate() ||
+                  dateToCheck.getMonth() !== taskDate.getMonth()
+                )
+                  return false;
+                const diffYears = differenceInCalendarYears(dateToCheck, taskDate);
+                return diffYears >= 0 && diffYears % interval === 0;
+              }
+              default:
+                return false;
+            }
+          }
+          return false;          
     }
   }
   
