@@ -1,5 +1,5 @@
 import { tasksData } from './tasks-data.js';
-import {isToday, parseISO, isSameDay, isAfter, isWeekend} from 'date-fns'
+import {isToday, parseISO, isSameDay, isAfter, isWeekend, differenceInDays} from 'date-fns'
 import {displayTask} from './display-tasks.js'
 
 export { displayTodayTasks,  isTaskScheduledForDate }

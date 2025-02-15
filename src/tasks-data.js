@@ -40,7 +40,7 @@ listsData.push(new lists('Tasks'))
 
 // Fake tasks data with some tasks having no priority
 export const tasksData = [
-  tasks("Complete JavaScript homework", "High", new lists('Academics'), "2025-01-30", "weekdays", true, false),
+  tasks("Complete JavaScript homework", "High", new lists('Academics'), "2025-01-30", "weekly", true, false),
   // tasks("Workout at the gym", "", "Health", "2025-01-29", "Yes (Daily)", false, false),
   // tasks("Call Mom", "Low", "Personal", "2025-01-31", "No", true, true),
   // tasks("Team meeting", "High", "Work", "2025-02-01", "No", true, false),
