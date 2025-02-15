@@ -5,7 +5,7 @@ import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
-import { tasksData, lists, listsData } from './tasks-data.js';
+import { tasksData, lists, listsData, Label, labelsData, listsAndLabelsData} from './tasks-data.js';
 import listIcon from './images/group.svg'
 import {header} from './homepage.js';
 import flag from './images/flag.svg';
@@ -19,6 +19,7 @@ import monthCalender from './images/month-calender.svg'
 import addIcon from './images/add.svg'
 import newLabel from './images/new-label.svg'
 import homeIcon from './images/home.svg'
+import labelIcon from './images/label.svg'
 
 import { currentDate } from './homepage.js';
 import {displayWeekTasks} from './this-week.js'
@@ -86,7 +87,7 @@ function displayLists() {
     groupDiv.classList.add('groupDiv')
     groupDiv.style.height = `calc(100vh - 2.5em - ${document.querySelector('.sidebar-list').clientHeight}px)`;
     const groupArray = []
-    listsData.forEach(list => {
+    listsAndLabelsData.forEach(list => {
         if (!groupArray.includes(list)) {groupArray.push(list);}
     });
     
@@ -94,7 +95,8 @@ function displayLists() {
         const taskGroup = document.createElement('div');
         taskGroup.classList.add('taskGroup');
         const groupIcon = document.createElement('img');
-        groupIcon.src = listIcon;
+        if (listsData.includes(list)) {groupIcon.src = listIcon;}
+        if (labelsData.includes(list)) {groupIcon.src = labelIcon;}
         const groupName = document.createElement('p');
         groupName.textContent = list.name;
         taskGroup.appendChild(groupIcon);
@@ -109,6 +111,7 @@ function displayLists() {
 }
 
 export function groupSort(event) {
+    if (document.querySelector('textarea')) return
     let list = '';
     if (event == document.querySelector('.header > h2').textContent) {list = event}
     else {list = event.target.closest('.taskGroup').querySelector('p').textContent;}
@@ -216,13 +219,27 @@ function addList() {
     textarea.select();
     textarea.style.backgroundColor = '#3b3b3b'
     textarea.style.color = 'white'
-    textarea.addEventListener("keypress", (event) => {if (event.key === 'Enter') {setLatestListName()}});
+    textarea.keypressHandler = (event) => {
+        if (event.key === 'Enter') {
+            setLatestListName();
+        }
+    };
+    textarea.addEventListener("keypress", textarea.keypressHandler);    
+    textarea.addEventListener("blur", setLatestListName)
 }
     
 
 function setLatestListName() {
     const textarea = document.querySelector('textarea');
     const baseTitle = textarea.value.trim();
+    const keypressHandler = (event) => {
+        if (event.key === 'Enter') {
+            setLatestListName();
+        }
+    };
+    textarea.removeEventListener('keypress', textarea.keypressHandler);
+    textarea.removeEventListener('blur', setLatestListName);
+
     if (baseTitle) {
         // Start with the base title
         let newTitle = baseTitle;
@@ -238,12 +255,61 @@ function setLatestListName() {
       // If the new title is empty, revert to the original title (assuming titleElement exists)
         textarea.replaceWith(titleElement);
     }
-    // Remove the event listener (if necessary)
-    textarea.removeEventListener('keypress', setLatestListName);
+
 }
   
 
 function addLabel() {
+    let newList = new Label()
+    console.log(labelsData)
+    document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
+    document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
+    displayLists()
+    dispalyAddListsAndLabels()
+    let lastLabel = document.querySelector('div.groupDiv').lastChild.querySelector('p')
+    const textarea = document.createElement("textarea");
+    textarea.value = 'Untitled Label';
+    textarea.style.width = "100%";
+    textarea.style.height = "auto";
+    lastLabel.replaceWith(textarea)
+    textarea.focus();
+    textarea.select();
+    textarea.style.backgroundColor = '#3b3b3b'
+    textarea.style.color = 'white'
+    textarea.keypressHandler = (event) => {
+        if (event.key === 'Enter') {
+            setLatestLabelName();
+        }
+    };
+    textarea.addEventListener("keypress", textarea.keypressHandler);    
+    textarea.addEventListener("blur", setLatestLabelName)
+}
 
+function setLatestLabelName() {
+    const textarea = document.querySelector('textarea');
+    const baseTitle = textarea.value.trim();
+    const keypressHandler = (event) => {
+        if (event.key === 'Enter') {
+            setLatestLabelName();
+        }
+    };
+    textarea.removeEventListener('keypress', textarea.keypressHandler);
+    textarea.removeEventListener('blur', setLatestLabelName);
+
+    if (baseTitle) {
+        // Start with the base title
+        let newTitle = baseTitle;
+        let suffix = 1;
+        // Check other lists (all except the new one at the end)
+        while (labelsData.slice(0, labelsData.length - 1).some(label => label.name === newTitle)) {newTitle = `${baseTitle} (${suffix})`;suffix++;}
+        labelsData[labelsData.length - 1].name = newTitle;
+        const newTitleElement = document.createElement("p");
+        newTitleElement.textContent = newTitle;
+        newTitleElement.style.wordBreak = "break-word";
+        textarea.replaceWith(newTitleElement);
+    } else {
+      // If the new title is empty, revert to the original title (assuming titleElement exists)
+        textarea.replaceWith(titleElement);
+    }
 }
 

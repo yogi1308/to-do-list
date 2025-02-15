@@ -12,12 +12,26 @@ export class dateAndTask {
   }
 }
 
+export let listsAndLabelsData = []
+
+export class Label {
+  lists = []
+  constructor(name = 'Untitled Label') {
+    this.name = name
+    labelsData.push(this)
+    listsAndLabelsData.push(this)
+  }
+}
+
+export const labelsData = []
+
 export class lists {
   tasks = []
   constructor(name = 'Untitled List', label = 'Tasks') {
     this.name = name
     this.label = label
     listsData.push(this)
+    listsAndLabelsData.push(this)
   }
 }
 
