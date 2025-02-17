@@ -25,27 +25,27 @@ function isTaskScheduledForDate(task, dateToCheck) {
     
     // Use task.repeat as a string
     switch(task.repeat) {
-      case 'daily':
+      case 'Daily':
         // Repeats every day from the task date onward
         return isAfter(dateToCheck, taskDate) || isSameDay(dateToCheck, taskDate);
         
-      case 'weekdays':
+      case 'Weekdays':
         // Only repeat on weekdays (skip weekends)
         if (isWeekend(dateToCheck)) return false;
         return isAfter(dateToCheck, taskDate) || isSameDay(dateToCheck, taskDate);
         
-      case 'weekly':
+      case 'Weekly':
         // Show if it's the same day of the week and a multiple of 7 days has passed
         return dateToCheck.getDay() === taskDate.getDay() &&
                differenceInDays(dateToCheck, taskDate) >= 0 &&
                differenceInDays(dateToCheck, taskDate) % 7 === 0;
         
-      case 'monthly':
+      case 'Monthly':
         // Repeat on the same day-of-month (consider edge cases separately)
         return dateToCheck.getDate() === taskDate.getDate() &&
                differenceInMonths(dateToCheck, taskDate) >= 0;
         
-      case 'yearly':
+      case 'Yearly':
         // Repeat if both month and day match
         return dateToCheck.getDate() === taskDate.getDate() &&
                dateToCheck.getMonth() === taskDate.getMonth() &&

@@ -44,7 +44,7 @@ function displayTask(task) {
     taskStarIcon.addEventListener('click', importanceChanged);
 
     const flagIcon = document.createElement('img');
-    if (task.priority == "") {flagIcon.src = flag;} else if (task.priority == 'Low') {flagIcon.src = blueFlag;} else if (task.priority == 'High') {flagIcon.src = redFlag} else if (task.priority == 'Medium') {flagIcon.src = orangeFlag}
+    if (task.priority == "") {flagIcon.src = flag;} else if (task.priority == "None") {flagIcon.src = flag;} else if (task.priority == 'Low') {flagIcon.src = blueFlag;} else if (task.priority == 'High') {flagIcon.src = redFlag} else if (task.priority == 'Medium') {flagIcon.src = orangeFlag}
     flagIcon.classList.add('flag-icon');
     flagIcon.addEventListener('click', priorityChanged)
 

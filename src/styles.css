@@ -135,7 +135,7 @@ body {
 
 .hidden {display: none;}
 
-.input-star {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
+.input-star, .input-repeat {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
 
 .input-list {background-color: #3b3b3b; cursor: pointer;}
 #main > ul > div > div > p {cursor: pointer;}
@@ -148,7 +148,37 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
 
+.repetetion-list {
+  border: 2px solid #3b3b3b;
+  list-style: none;
+  width: fit-content;
+  padding: 10px 20px 0px 20px;
+  gap: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #1c1c1c;
+}
+
+.repetetion-list > li:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+input#quantity, select#repeat {
+  background-color: #1c1c1c;
+  border:1px solid #3b3b3b;
+  border-radius: 8px;
+  color: white;
+  height: 2.0em;
+}
+
+button {
+  background-color: #1c1c1c;
+  border:1px solid #3b3b3b;
+  border-radius: 8px;
+  color: white;
+  height: 2.0em;
 }
 
 /* Base styling for the date input */
@@ -174,7 +204,7 @@ input[type="date"]:valid {
 /* Hide the default placeholder text (parts of the date) */
 input[type="date"]::-webkit-datetime-edit {
   color: transparent;
-  display: none
+  display: none;
 }
 
 /* Customize the calendar icon */
@@ -184,6 +214,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   padding-left: .65em;
 }
+
+/* For Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 
 .list-name {
   white-space: nowrap;       /* Prevents text from wrapping */

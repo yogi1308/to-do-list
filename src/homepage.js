@@ -9,13 +9,14 @@ import orangeFlag from './images/orange-flag.svg';
 import star from './images/star.svg'
 import filledStar from './images/filled-star.svg'
 import listIcon from './images/group.svg'
+import repeatSVG from './images/repeat.svg'
 import {chooseDisplay, displayLists, dispalyAddListsAndLabels, groupSort} from './sidebar.js'
 
 let currentDate = new Date()
 console.log(currentDate)
 let currentDay = format(currentDate, 'eeee')
 export {homePage, header, currentDate, currentDay}
-let priority = ''
+let priority = ""
 let important = undefined
 let list = listsData.find(item => item.name === 'Tasks');
 let date = undefined
@@ -60,6 +61,12 @@ function taskBar() {
     inputCalender.addEventListener('change', (event) => {date = event.target.value;console.log(date); inputCalenderClicked(inputCalender)});
     addtaskDiv.appendChild(inputCalender)
 
+    const repeatIcon = document.createElement('img')
+    repeatIcon.src = repeatSVG
+    repeatIcon.classList.add('input-repeat')
+    repeatIcon.addEventListener('click', inputRepeatClicked)
+    addtaskDiv.appendChild(repeatIcon)
+
     const starIcon = document.createElement('img')
     starIcon.src = star
     starIcon.classList.add('input-star')
@@ -100,6 +107,7 @@ function header() {
 
 function addTaskFunction(taskName) {
     const addTask = document.querySelector('#add-task');
+    console.log(repeat)
     tasksData.push(tasks(addTask.value, priority, list, date, repeat, important));
     addTask.value = taskName;
     const taskList = document.querySelector('.task-list');
@@ -112,7 +120,7 @@ function addTaskFunction(taskName) {
     let view = document.querySelector('.header > h2').textContent
     if (listsData.find(list => list.name === view)) {groupSort(view);}
     chooseDisplay(view);
-    priority = ''
+    priority = ""
     important = undefined
     list = listsData.find(item => item.name === 'Tasks');
     date = undefined
@@ -178,18 +186,21 @@ function inputFlagClicked() {
         if (!dropdown.classList.contains('hidden')) {
             document.addEventListener('click', (event)=> {
                 dropdown.classList.add('hidden');
+                document.querySelector('#add-task').focus()
                 document.removeEventListener('click', (event=> {document.removeEventListener()}));
             });
         }
     } else {
         dropdown.classList.add('hidden');
+        document.querySelector('#add-task').focus()
     }
 }
 
 function prioritySelected(event) {
     const chosenPriority = event.currentTarget.querySelector('span').textContent
-    priority = chosenPriority.split(' ')[0]
     const flagIcon = document.querySelector('img.input-flag')
+    if (chosenPriority == 'None') {flagIcon.src = flag;}
+    priority = chosenPriority.split(' ')[0]
     if (priority == 'Low') {
         flagIcon.src = blueFlag
     }
@@ -253,7 +264,6 @@ function removeDateFromTaskabar() {
 }
 
 function inputlistClicked(event) {
-    console.log('clcicke')
     document.addEventListener('click', handleClickOutside, true);
     const listDropdownMenu = document.createElement('ul');
     listDropdownMenu.classList.add('list-selector')
@@ -262,8 +272,9 @@ function inputlistClicked(event) {
     chooseList.style.bottom = `calc(${document.querySelector('div.add-task-div').clientHeight}px + 3px)`;
     chooseList.style.right = `calc(5% + 4 * 0.5em + 20px)`;
     chooseList.style.height = 'auto';
-    chooseList.style.border = '1px solid #3b3b3b';
+    chooseList.style.border = '2px solid #3b3b3b';
     chooseList.style.borderRadius = '8px';  
+    chooseList.style.backgroundColor = '#1c1c1c'
     chooseList.querySelectorAll('*').forEach(child => {child.removeEventListener('click', groupSort);});
     chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
     listDropdownMenu.appendChild(chooseList);
@@ -287,8 +298,117 @@ function listSelected() {
     listName.textContent = list.name
     listName.style.padding = '5px'
     listName.style.backgroundColor = '#3b3b3b'
+    listName.style.color = 'white'
     listName.classList.add('list-name')
     document.querySelector('div.add-task-div').insertBefore(listName, document.querySelector('div.add-task-div').children[1])
     document.querySelector('#add-task').focus()
     document.removeEventListener('click', handleClickOutside, true)
+}
+
+function inputRepeatClicked() {
+    console.log('clicked')
+    document.addEventListener('click', handleClickOutsideForRepeat, true);
+    if (!document.querySelector('ul.repetetion-list')) {
+        const repetitionList = document.createElement('ul');
+        repetitionList.className = 'repetetion-list';
+        repetitionList.innerHTML = 
+            `<li>Daily</li>
+            <li>Weekdays</li>
+            <li>Weekly</li>
+            <li>Monthly</li>
+            <li>Yearly</li>
+            <li>Custom</li>
+            <li>Never</li>`
+        document.getElementById('main').appendChild(repetitionList);
+        repetitionList.style.position = 'fixed'
+        repetitionList.style.bottom = document.querySelector('div.add-task-div').clientHeight + 'px'
+        repetitionList.style.right = `calc(5% + 0.5em + 20px)`;
+        repetitionList.style.zIndex = '1000'
+        repetitionList.style.backdropFilter = 'opaque'
+        repetitionList.style.backfaceVisibility = 'hidden'
+        repetitionList.addEventListener('click', repeatSelected)
+    }
+}
+
+function repeatSelected() {
+    const selected = event.target.closest('li').textContent
+    if (selected != 'Custom') {
+        document.removeEventListener('click', handleClickOutsideForRepeat, true);
+        repeat = selected
+        document.querySelector('#main').removeChild(document.querySelector('.repetetion-list'))
+        document.querySelector('#add-task').focus()
+        if(document.querySelector('.selected-repetition')) {document.querySelector('#main > div.add-task-div').removeChild(document.querySelector('.selected-repetition'))}
+        const selectedRepetition = document.createElement('p')
+        selectedRepetition.textContent = repeat;
+        selectedRepetition.classList.add('selected-repetition')
+        selectedRepetition.style.backgroundColor = '#3b3b3b'
+        selectedRepetition.style.alignContent = 'center'
+        selectedRepetition.style.color = 'white'
+        document.querySelector('div.add-task-div').insertBefore(selectedRepetition, document.querySelector('img.input-repeat'))
+    }
+    if (selected == 'Custom') {
+        document.removeEventListener('click', handleClickOutsideForRepeat, true);
+        document.querySelector('#main').removeChild(document.querySelector('.repetetion-list'))
+        const customRepetitionList = document.createElement('ul');
+        customRepetitionList.className = 'custom-repetetion-list';
+        customRepetitionList.innerHTML = `
+        <div style="border: 1px solid #3b3b3b; padding: 5px; border-radius: 8px">
+        <p>Repeat Every...</p>
+        <div>
+            <input type="number" id="quantity" name="quantity" min="1">
+            <select name="repeat" id="repeat">
+                <option value="Days">Days</option>
+                <option value="Weeks">Weeks</option>
+                <option value="Months">Months</option>
+                <option value="Years">Years</option>
+            </select>
+        </div>
+        <div style="margin-top: 8px; display: flex; gap: 8px;"><button class="cancel" style="cursor:pointer;">Cancel</button><button class="submit" style="cursor: pointer;">Submit</button></div>
+        </div>`
+        document.getElementById('main').appendChild(customRepetitionList);
+        customRepetitionList.style.position = 'fixed'
+        customRepetitionList.style.bottom = document.querySelector('div.add-task-div').clientHeight + 'px'
+        customRepetitionList.style.right = `calc(5% + 0.5em + 20px)`;
+        document.querySelector('.submit').addEventListener('click', customRepeatSelected)
+        document.querySelector('.cancel').addEventListener('click', customRepeatSelected)
+    }
+}
+
+function customRepeatSelected() {
+    if (event.target.closest('button').textContent == 'Submit') {
+        repeat = 'Every ' + document.getElementById('quantity').value + ' ' + document.getElementById('repeat').value
+    }
+    if (event.target.closest('button').textContent == 'Cancel') {
+        document.querySelector('.custom-repetetion-list')?.remove();
+        document.querySelector('.repetetion-list')?.remove();
+        document.removeEventListener('click', handleClickOutsideForRepeat, true)
+        document.querySelector('.custom-repetetion-list')?.remove();
+        document.querySelector('.repetetion-list')?.remove();
+        return
+    }
+    document.querySelector('#main').removeChild(document.querySelector('ul.custom-repetetion-list'))
+    if(document.querySelector('.selected-repetition')) {document.querySelector('#main > div.add-task-div').removeChild(document.querySelector('.selected-repetition'))}
+    const selectedRepetition = document.createElement('p')
+    selectedRepetition.textContent = repeat.substring(6);
+    selectedRepetition.classList.add('selected-repetition')
+    selectedRepetition.style.backgroundColor = '#3b3b3b'
+    selectedRepetition.style.alignContent  = 'center'
+    selectedRepetition.style.color = 'white'
+    selectedRepetition.style.whiteSpace = 'nowrap'
+    document.querySelector('div.add-task-div').insertBefore(selectedRepetition, document.querySelector('img.input-repeat'))
+    document.removeEventListener('click', handleClickOutsideForRepeat, true)
+
+    document.querySelector('.custom-repetetion-list')?.remove();
+    document.querySelector('.repetetion-list')?.remove();
+}
+
+function handleClickOutsideForRepeat(e) {
+    const repetitionList = document.querySelector('.repetetion-list');
+    const customList = document.querySelector('.custom-repetition-list');
+
+    if (!repetitionList?.contains(e.target)) {
+        repetitionList?.remove()
+        customList?.remove();
+        document.removeEventListener('click', handleClickOutsideForRepeat, true);
+    }
 }
