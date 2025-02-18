@@ -181,6 +181,10 @@ button {
   height: 2.0em;
 }
 
+.vertical-dots {
+  margin-left: auto;
+}
+
 /* Base styling for the date input */
 input[type="date"] {
   background-color: #222;    /* Dark background */

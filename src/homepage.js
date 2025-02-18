@@ -1,3 +1,5 @@
+// delete, note, label, local save, edit tasks from quick view
+
 import { tasks, tasksData, listsData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
@@ -277,8 +279,10 @@ function inputlistClicked(event) {
     chooseList.style.backgroundColor = '#1c1c1c'
     chooseList.querySelectorAll('*').forEach(child => {child.removeEventListener('click', groupSort);});
     chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
+      
     listDropdownMenu.appendChild(chooseList);
     document.querySelector('#main').appendChild(listDropdownMenu);
+    document.querySelectorAll('#main > ul.list-selector > div.groupDiv > div.taskGroup > img.vertical-dots').forEach(dot => {dot.remove();});
 }
 
 function handleClickOutside(e) {

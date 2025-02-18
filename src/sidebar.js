@@ -20,6 +20,7 @@ import addIcon from './images/add.svg'
 import newLabel from './images/new-label.svg'
 import homeIcon from './images/home.svg'
 import labelIcon from './images/label.svg'
+import verticalDotsIcon from './images/three-vertical-dots.svg'
 
 import { currentDate } from './homepage.js';
 import {displayWeekTasks} from './this-week.js'
@@ -78,6 +79,7 @@ function sidebarItems() {
         }
     });
     displayLists()
+    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
     dispalyAddListsAndLabels()
 }
 
@@ -99,10 +101,17 @@ function displayLists() {
         if (labelsData.includes(list)) {groupIcon.src = labelIcon;}
         const groupName = document.createElement('p');
         groupName.textContent = list.name;
+
+        const vertDots = document.createElement('img')
+        vertDots.src = verticalDotsIcon;
+        vertDots.classList.add('vertical-dots')
+
         taskGroup.appendChild(groupIcon);
         taskGroup.appendChild(groupName);
         groupDiv.appendChild(taskGroup);
-        taskGroup.addEventListener('click', groupSort)
+        taskGroup.appendChild(vertDots)
+        groupName.addEventListener('click', groupSort)
+        vertDots.addEventListener('click', verticalDotsClicked)
     })
     sidebar.appendChild(groupDiv);
     groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
@@ -313,3 +322,88 @@ function setLatestLabelName() {
     }
 }
 
+function verticalDotsClicked() {
+    const listSlashLabelName = event.target.parentElement.querySelector('p').textContent.trim();
+    if (listsData.find(item => item.name === listSlashLabelName)) { 
+        console.log('Match found'); 
+        listDotsClicked(listSlashLabelName)
+    }
+
+    else if (labelsData.find(item => item.name === listSlashLabelName)) {
+        console.log('Match found'); 
+        labelDotsClicked(listSlashLabelName)
+    }
+}
+
+function listDotsClicked(listSlashLabelName) {
+    const listOptionsUl = document.createElement('ul');
+    listOptionsUl.classList.add('list-options-ul');
+    listOptionsUl.innerHTML = `<li class="delete-list">Delete List</li>
+                                <li class="delete-list-with-tasks">Delete with Tasks</li>
+        <li class="change-label">Change Label</li>`
+    document.querySelector('#content').appendChild(listOptionsUl)
+    listOptionsUl.style.position = 'fixed'
+    const rect = event.target.getBoundingClientRect();
+    const yPos = window.scrollY + rect.top - 60;
+    listOptionsUl.style.top = yPos + 'px';
+    listOptionsUl.style.left = `calc(10px + ${document.querySelector('#sidebar').clientWidth}px)`
+    listOptionsUl.style.zIndex = '10000'
+    listOptionsUl.style.border = '2px solid #3b3b3b'
+    listOptionsUl.style.padding = '5px'
+    listOptionsUl.style.borderRadius = '8px'
+    listOptionsUl.style.listStyle = 'none'
+    listOptionsUl.style.backgroundColor = '#1c1c1c'
+    listOptionsUl.style.color = '#788cde'
+    listOptionsUl.style.cursor = 'pointer'
+    document.querySelector('.delete-list').addEventListener('click', () => deleteList(listSlashLabelName))
+    document.querySelector('.change-label').addEventListener('click', () => changeLabel(listSlashLabelName))
+    document.querySelector('.delete-list-with-tasks').addEventListener('click', () => deleteListsWithTasks(listSlashLabelName))
+    document.addEventListener('click', clickedOutsidelistOptionsUl, true)
+}
+
+function labelDotsClicked(listSlashLabelName) {
+
+}
+
+function deleteList(listSlashLabelName) {
+    const existingTasksObject = listsData.find(item => item.name === 'Tasks');
+    tasksData.forEach(task => {
+        if (task.list.name == listSlashLabelName) {task.list = existingTasksObject;}
+    })
+    const indexList = listsData.findIndex(list => list.name === listSlashLabelName);
+
+    // If found, remove it using splice()
+    if (indexList !== -1) {
+        listsData.splice(indexList, 1);
+    }
+
+    const index = listsAndLabelsData.findIndex(list => list.name === listSlashLabelName);
+    if (index !== -1) {
+        listsAndLabelsData.splice(index, 1);
+    }
+
+
+    console.log('Updated listsData:', listsData, listsAndLabelsData);
+    // listsAndLabelsData = listsAndLabelsData.filter(list => list.name !== listSlashLabelName)
+    const groupDiv = document.querySelector('div.groupDiv');
+    while (groupDiv.children.length > 1) {
+        groupDiv.removeChild(groupDiv.lastChild);
+    }
+    displayLists()
+    document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
+    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)').src = homeIcon;
+    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
+}
+
+function deleteListsWithTasks(listSlashLabelName) {
+    
+}
+
+function changeLabel() {
+
+}
+
+function clickedOutsidelistOptionsUl() {
+    document.querySelector('#content > ul.list-options-ul')?.remove();
+    document.removeEventListener('click', clickedOutsidelistOptionsUl, true)
+}

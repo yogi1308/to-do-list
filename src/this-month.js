@@ -21,48 +21,6 @@ function setPlusMinusMonthsToZero() {
   plusMinusMonths = 0;
 }
 
-/* 
-Assume isTaskScheduledForDate is defined and imported/available.
-For example:
-function isTaskScheduledForDate(task, dateToCheck) {
-  // Convert the task's date string to a Date object
-  const taskDate = parseISO(task.date);
-  
-  // If the task's original date is the same as dateToCheck, show it
-  if (isSameDay(taskDate, dateToCheck)) return true;
-  
-  // If there's no repeat setting, don’t display it on other days
-  if (!task.repeat) return false;
-  
-  switch(task.repeat) {
-    case 'daily':
-      return isAfter(dateToCheck, taskDate) || isSameDay(dateToCheck, taskDate);
-    case 'weekdays':
-      if (isWeekend(dateToCheck)) return false;
-      return isAfter(dateToCheck, taskDate) || isSameDay(dateToCheck, taskDate);
-    case 'weekly':
-      return dateToCheck.getDay() === taskDate.getDay() &&
-             differenceInDays(dateToCheck, taskDate) >= 0 &&
-             differenceInDays(dateToCheck, taskDate) % 7 === 0;
-    case 'monthly':
-      return dateToCheck.getDate() === taskDate.getDate() &&
-             differenceInMonths(dateToCheck, taskDate) >= 0;
-    case 'yearly':
-      return dateToCheck.getDate() === taskDate.getDate() &&
-             dateToCheck.getMonth() === taskDate.getMonth() &&
-             differenceInYears(dateToCheck, taskDate) >= 0;
-    default:
-      if (task.repeat.startsWith("custom:")) {
-         const customDays = parseInt(task.repeat.split(":")[1], 10);
-         if (isNaN(customDays)) return false;
-         const diffDays = differenceInDays(dateToCheck, taskDate);
-         return diffDays >= 0 && diffDays % customDays === 0;
-      }
-      return false;
-  }
-}
-*/
-
 // displayMonthTasks: builds the grid and then assigns tasks to every cell where they repeat.
 function displayMonthTasks(currentDate) {
   // Build the calendar grid (each day gets a data-date attribute)
