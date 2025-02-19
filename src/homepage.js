@@ -1,6 +1,6 @@
 // delete, note, label, local save, edit tasks from quick view
 
-import { tasks, tasksData, listsData } from './tasks-data.js';
+import { tasks, tasksData, listsData, listsAndLabelsData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
 import sidebarIcon from './images/sidebar.svg'
@@ -23,6 +23,8 @@ let important = undefined
 let list = listsData.find(item => item.name === 'Tasks');
 let date = undefined
 let repeat = undefined
+
+console.log(listsData)
 
 function homePage() {
     console.log('home page');

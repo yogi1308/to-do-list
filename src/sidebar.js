@@ -33,6 +33,8 @@ export { sidebar, displayTask, view, changeHeader, chooseDisplay, displayLists, 
 let view = ''
 let priorityDisplayListView = false;
 
+console.log(listsAndLabelsData)
+
 
 function sidebar() {
     const sidebar = document.querySelector('#sidebar');
@@ -396,12 +398,43 @@ function deleteList(listSlashLabelName) {
 }
 
 function deleteListsWithTasks(listSlashLabelName) {
+    const existingTasksObject = listsData.find(item => item.name === 'Tasks');
+    for (let i = tasksData.length - 1; i >= 0; i--) {
+        if (tasksData[i].list.name === listSlashLabelName) {
+            tasksData.splice(i, 1);
+        }
+    }
+    
+    const indexList = listsData.findIndex(list => list.name === listSlashLabelName);
+
+    // If found, remove it using splice()
+    if (indexList !== -1) {
+        listsData.splice(indexList, 1);
+    }
+
+    const index = listsAndLabelsData.findIndex(list => list.name === listSlashLabelName);
+    if (index !== -1) {
+        listsAndLabelsData.splice(index, 1);
+    }
+
+
+    console.log('Updated listsData:', listsData, listsAndLabelsData);
+    // listsAndLabelsData = listsAndLabelsData.filter(list => list.name !== listSlashLabelName)
+    const groupDiv = document.querySelector('div.groupDiv');
+    while (groupDiv.children.length > 1) {
+        groupDiv.removeChild(groupDiv.lastChild);
+    }
+    displayLists()
+    document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
+    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)').src = homeIcon;
+    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
+}
+
+function changeLabel(listSlashLabelName) {
     
 }
 
-function changeLabel() {
 
-}
 
 function clickedOutsidelistOptionsUl() {
     document.querySelector('#content > ul.list-options-ul')?.remove();
