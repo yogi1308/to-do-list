@@ -219,7 +219,8 @@ function addList() {
     textarea.style.color = 'white'
     textarea.keypressHandler = (event) => {
         if (event.key === 'Enter') {
-            setLatestListName();
+
+            setLatestListName(undefined);
         }
     };
     textarea.addEventListener("keypress", textarea.keypressHandler);    
@@ -227,12 +228,12 @@ function addList() {
 }
     
 
-function setLatestListName() {
+function setLatestListName(listSlashLabelName) {
     const textarea = document.querySelector('textarea');
     const baseTitle = textarea.value.trim();
     const keypressHandler = (event) => {
         if (event.key === 'Enter') {
-            setLatestListName();
+            setLatestListName(listSlashLabelName);
         }
     };
     textarea.removeEventListener('keypress', textarea.keypressHandler);
@@ -249,9 +250,20 @@ function setLatestListName() {
         newTitleElement.textContent = newTitle;
         newTitleElement.style.wordBreak = "break-word";
         textarea.replaceWith(newTitleElement);
+        newTitleElement.addEventListener('click', groupSort)
     } else {
-      // If the new title is empty, revert to the original title (assuming titleElement exists)
-        textarea.replaceWith(titleElement);
+        // If the new title is empty, revert to the original title (assuming titleElement exists)
+        const newTitleElement = document.createElement("p");
+        if (listSlashLabelName == undefined) {listSlashLabelName = 'Untitled List'}
+        let newTitle = listSlashLabelName;
+        let suffix = 1;
+        // Check other lists (all except the new one at the end)
+        while (listsData.slice(0, listsData.length - 1).some(list => list.name === newTitle)) {newTitle = `${listSlashLabelName} (${suffix})`;suffix++;}
+        newTitleElement.textContent = newTitle;
+        newTitleElement.style.wordBreak = "break-word";
+        textarea.replaceWith(newTitleElement);
+        newTitleElement.addEventListener('click', groupSort)
+        listsData[listsData.length - 1].name = newTitle;
     }
 
 }
@@ -268,7 +280,8 @@ function listDotsClicked(listSlashLabelName) {
     const listOptionsUl = document.createElement('ul');
     listOptionsUl.classList.add('list-options-ul');
     listOptionsUl.innerHTML = `<li class="delete-list">Delete List</li>
-                                <li class="delete-list-with-tasks">Delete with Tasks</li>`
+                                <li class="delete-list-with-tasks">Delete with Tasks</li>
+                                <li class="change-list-name">Change List Name</li>`
     document.querySelector('#content').appendChild(listOptionsUl)
     listOptionsUl.style.position = 'fixed'
     const rect = event.target.getBoundingClientRect();
@@ -285,6 +298,7 @@ function listDotsClicked(listSlashLabelName) {
     listOptionsUl.style.cursor = 'pointer'
     document.querySelector('.delete-list').addEventListener('click', () => deleteList(listSlashLabelName))
     document.querySelector('.delete-list-with-tasks').addEventListener('click', () => deleteListsWithTasks(listSlashLabelName))
+    document.querySelector('.change-list-name').addEventListener('click', (e) => changeListName(e, listSlashLabelName))
     document.addEventListener('click', clickedOutsidelistOptionsUl, true)
 }
 
@@ -338,4 +352,27 @@ function deleteListsWithTasks(listSlashLabelName) {
 function clickedOutsidelistOptionsUl() {
     document.querySelector('#content > ul.list-options-ul')?.remove();
     document.removeEventListener('click', clickedOutsidelistOptionsUl, true)
+}
+
+function changeListName(event, listSlashLabelName) {
+    const groupDiv = document.querySelector('div.groupDiv')
+    groupDiv.querySelectorAll('div.taskGroup').forEach(child => {
+        if (child.querySelector('p').textContent == listSlashLabelName) {
+            const textarea = document.createElement("textarea");
+            textarea.value = listSlashLabelName;
+            textarea.style.width = "100%";
+            textarea.style.height = "auto";
+            child.querySelector('p').replaceWith(textarea)
+            textarea.focus();
+            textarea.select();
+            textarea.style.backgroundColor = '#3b3b3b'
+            textarea.style.color = 'white'
+            textarea.keypressHandler = (event) => {
+                if (event.key === 'Enter') {
+                    setLatestListName(listSlashLabelName);
+                }
+            };
+            textarea.addEventListener("keypress", textarea.keypressHandler);    
+            textarea.addEventListener("blur", () => setLatestListName)
+        }})
 }
