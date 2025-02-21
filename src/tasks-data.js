@@ -1,5 +1,5 @@
-export const tasks = function (task, priority, list, date, repeat, important, completed) {
-  return { task, priority, list, date, repeat, important, completed };
+export const tasks = function (task, priority, list, date, repeat, important, completed, notes) {
+  return { task, priority, list, date, repeat, important, completed,notes };
 };
 
 export class dateAndTask {
@@ -24,7 +24,7 @@ export const listsData = [];
 
 // Fake tasks data with some tasks having no priority
 export const tasksData = [
-  tasks("Complete JavaScript homework", "High", new lists('Academics'), "2025-01-30", "none", true, false),
+  tasks("Complete JavaScript homework", "High", new lists('Academics'), "2025-01-30", "none", true, false, "Complete the exercises at the end of the chapter"),
   // tasks("Workout at the gym", "", "Health", "2025-01-29", "Yes (Daily)", false, false),
   // tasks("Call Mom", "Low", "Personal", "2025-01-31", "No", true, true),
   // tasks("Team meeting", "High", "Work", "2025-02-01", "No", true, false),

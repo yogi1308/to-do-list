@@ -1,4 +1,4 @@
-// delete, label, local save, edit tasks from quick view
+// delete, label, local save, note, edit tasks from quick view
 
 import { tasks, tasksData, listsData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
@@ -12,6 +12,7 @@ import star from './images/star.svg'
 import filledStar from './images/filled-star.svg'
 import listIcon from './images/group.svg'
 import repeatSVG from './images/repeat.svg'
+import notesIcon from './images/notes.svg'
 import {chooseDisplay, displayLists, dispalyAddListsAndLabels, groupSort} from './sidebar.js'
 
 let currentDate = new Date()
@@ -20,9 +21,11 @@ let currentDay = format(currentDate, 'eeee')
 export {homePage, header, currentDate, currentDay}
 let priority = ""
 let important = undefined
-let list = listsData.find(item => item.name === 'Tasks');
+let list = undefined
 let date = undefined
 let repeat = undefined
+let notes = ''
+let completed = false
 
 console.log(listsData)
 
@@ -71,6 +74,12 @@ function taskBar() {
     repeatIcon.addEventListener('click', inputRepeatClicked)
     addtaskDiv.appendChild(repeatIcon)
 
+    const notes = document.createElement('img')
+    notes.src = notesIcon
+    notes.classList.add('input-notes')
+    notes.addEventListener('click', inputNotesClicked)
+    addtaskDiv.appendChild(notes)
+
     const starIcon = document.createElement('img')
     starIcon.src = star
     starIcon.classList.add('input-star')
@@ -112,7 +121,7 @@ function header() {
 function addTaskFunction(taskName) {
     const addTask = document.querySelector('#add-task');
     console.log(repeat)
-    tasksData.push(tasks(addTask.value, priority, list, date, repeat, important));
+    tasksData.push(tasks(addTask.value, priority, list, date, repeat, important, completed, notes));
     addTask.value = taskName;
     const taskList = document.querySelector('.task-list');
     const main = document.querySelector('#main');
@@ -137,6 +146,7 @@ function addTaskFunction(taskName) {
     if (document.querySelector('.list-name')) {document.querySelector('div.add-task-div').removeChild(document.querySelector('.list-name'))}
     document.querySelector('#main > div.add-task-div > p.selected-repetition')?.remove()
     document.querySelector('input[type="date"]').value = ''
+    notes = ''
 }
 
 function sidebarDisplayOption() {
@@ -421,3 +431,204 @@ function handleClickOutsideForRepeat(e) {
         document.removeEventListener('click', handleClickOutsideForRepeat, true);
     }
 }
+
+function execCmd(command) {
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+    
+    const range = selection.getRangeAt(0);
+    let elementTag;
+    
+    switch(command) {
+        case 'bold': elementTag = 'b'; break;
+        case 'italic': elementTag = 'i'; break;
+        case 'underline': elementTag = 'u'; break;
+        case 'insertUnorderedList': 
+            handleListCreation();
+            return;
+        default: return;
+    }
+
+    if (isStyleApplied(range, elementTag)) {
+        removeStyle(elementTag);
+    } else {
+        applyStyle(elementTag);
+    }
+
+    function isStyleApplied(range, tag) {
+        const ancestor = range.commonAncestorContainer;
+        return !!findParentWithTag(ancestor, tag);
+    }
+
+    function findParentWithTag(node, tag) {
+        let parent = node.parentElement;
+        while (parent) {
+            if (parent.tagName.toLowerCase() === tag) return parent;
+            parent = parent.parentElement;
+        }
+        return null;
+    }
+
+    function applyStyle(tag) {
+        const wrapper = document.createElement(tag);
+        try {
+            range.surroundContents(wrapper);
+        } catch(e) {
+            console.warn("Cannot wrap non-contiguous selection");
+        }
+    }
+
+    function removeStyle(tag) {
+        const wrapper = findParentWithTag(range.commonAncestorContainer, tag);
+        if (wrapper) {
+            const parent = wrapper.parentNode;
+            while (wrapper.firstChild) {
+                parent.insertBefore(wrapper.firstChild, wrapper);
+            }
+            parent.removeChild(wrapper);
+        }
+    }
+}
+
+function handleListCreation() {
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    const range = selection.getRangeAt(0);
+    const ul = document.createElement('ul');
+    const li = document.createElement('li');
+    
+    if (range.collapsed) {
+        li.textContent = '• ';
+        ul.appendChild(li);
+        range.insertNode(ul);
+    } else {
+        const content = range.extractContents();
+        li.appendChild(content);
+        ul.appendChild(li);
+        range.insertNode(ul);
+    }
+    
+    // Move cursor into new list item
+    const newRange = document.createRange();
+    newRange.setStart(li, 0);
+    newRange.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(newRange);
+}
+
+function insertImage() {
+    const url = prompt("Enter image URL:");
+    if (!url) return;
+
+    const img = document.createElement('img');
+    img.src = url;
+    img.style.maxWidth = '200px';
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(img);
+    }
+}
+
+function insertDocument() {
+    const url = prompt("Document URL:");
+    const text = prompt("Link text:", "View Document");
+    if (!url || !text) return;
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.textContent = text;
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(link);
+    }
+}
+
+function handleFileUpload(event) {
+    const file = event.target.files[0]; // Get the selected file
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const fileURL = e.target.result;
+        const link = document.createElement('a');
+        link.href = fileURL;
+        link.download = file.name; // Allow file download
+        link.textContent = file.name;
+        link.target = "_blank";
+
+        // Insert into the editor
+        const editor = document.getElementById('editor');
+        editor.appendChild(link);
+        editor.appendChild(document.createElement('br')); // New line
+    };
+
+    reader.readAsDataURL(file); // Convert to Base64 for previewing in the editor
+}
+
+
+
+function inputNotesClicked() {
+    if (document.querySelector('.notes-editor')) {
+        document.querySelector('.notes-editor').remove();
+        document.removeEventListener('click', handleClickOutsideForNotes, true)
+        return;
+    }
+    const notesEditor = document.createElement('div');
+    notesEditor.classList.add('notes-editor')
+    notesEditor.innerHTML = `<div id="toolbar">
+        <button type="button" id="boldBtn"><b>B</b></button>
+        <button type="button" id="italicBtn"><i>I</i></button>
+        <button type="button" id="underlineBtn"><u>U</u></button>
+        <button type="button" id="listBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill:white; width:1.75em" type="button" id="listBtn"><title>format-list-bulleted</title><path d="M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z" /></svg></button>
+        <input type="file" id="fileInput" style="display:none;" />
+        <button type="button" id="uploadFileBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill:white; width:1.5em"><title>paperclip</title><path d="M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z" /></svg></button>
+    </div>
+    <div id="editor" contenteditable="true" style="border: 1px solid #ccc; padding: 10px; min-height: 200px; color: white;">
+        Enter your Notes here...
+    </div>`;
+
+    document.getElementById('main').appendChild(notesEditor);
+
+    // Attach event listeners
+    document.getElementById('boldBtn').addEventListener('click', () => execCmd('bold'));
+    document.getElementById('italicBtn').addEventListener('click', () => execCmd('italic'));
+    document.getElementById('underlineBtn').addEventListener('click', () => execCmd('underline'));
+    document.getElementById('listBtn').addEventListener('click', handleListCreation);
+
+    // Handle local file uploads
+    document.getElementById('uploadFileBtn').addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+    notesEditor.style.marginTop = 'auto'
+    notesEditor.style.zIndex = '1000'
+    notesEditor.style.backdropFilter = 'opaque'
+    notesEditor.style.backfaceVisibility = 'hidden'
+    notesEditor.style.padding = '10px'
+    notesEditor.style.border = '1px solid white'
+    notesEditor.focus()
+
+    if (notes != '') {document.querySelector('#editor').textContent = notes}
+
+    document.addEventListener('click', handleClickOutsideForNotes, true);
+}
+
+function handleClickOutsideForNotes(e) {
+    if (!document.querySelector('.notes-editor').contains(e.target)) {
+        if (document.querySelector('#editor').textContent != 'Enter your Notes here...') {notes = document.querySelector('#editor').textContent.trim()}
+        document.querySelector('.notes-editor').remove();
+        document.removeEventListener('click', handleClickOutsideForNotes, true);
+        document.querySelector('#add-task').focus()
+    }
+}
+
