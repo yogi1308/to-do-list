@@ -5,7 +5,7 @@ import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
-import { tasksData, lists, listsData, Label, labelsData, listsAndLabelsData} from './tasks-data.js';
+import { tasksData, lists, listsData} from './tasks-data.js';
 import listIcon from './images/group.svg'
 import {header} from './homepage.js';
 import flag from './images/flag.svg';
@@ -17,9 +17,6 @@ import up from './images/up.svg';
 import calender from './images/calender.svg'
 import monthCalender from './images/month-calender.svg'
 import addIcon from './images/add.svg'
-import newLabel from './images/new-label.svg'
-import homeIcon from './images/home.svg'
-import labelIcon from './images/label.svg'
 import verticalDotsIcon from './images/three-vertical-dots.svg'
 
 import { currentDate } from './homepage.js';
@@ -32,8 +29,6 @@ export { sidebar, displayTask, view, changeHeader, chooseDisplay, displayLists, 
 
 let view = ''
 let priorityDisplayListView = false;
-
-console.log(listsAndLabelsData)
 
 
 function sidebar() {
@@ -81,7 +76,6 @@ function sidebarItems() {
         }
     });
     displayLists()
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
     dispalyAddListsAndLabels()
 }
 
@@ -91,7 +85,7 @@ function displayLists() {
     groupDiv.classList.add('groupDiv')
     groupDiv.style.height = `calc(100vh - 2.5em - ${document.querySelector('.sidebar-list').clientHeight}px)`;
     const groupArray = []
-    listsAndLabelsData.forEach(list => {
+    listsData.forEach(list => {
         if (!groupArray.includes(list)) {groupArray.push(list);}
     });
     
@@ -100,7 +94,6 @@ function displayLists() {
         taskGroup.classList.add('taskGroup');
         const groupIcon = document.createElement('img');
         if (listsData.includes(list)) {groupIcon.src = listIcon;}
-        if (labelsData.includes(list)) {groupIcon.src = labelIcon;}
         const groupName = document.createElement('p');
         groupName.textContent = list.name;
 
@@ -117,7 +110,6 @@ function displayLists() {
     })
     sidebar.appendChild(groupDiv);
     groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
-    document.querySelector('.groupDiv').firstChild.querySelector('img').src = homeIcon
     return groupDiv
 }
 
@@ -125,16 +117,13 @@ export function groupSort(event) {
     if (document.querySelector('textarea')) return
     let list = '';
     if (event == document.querySelector('.header > h2').textContent) {list = event}
-    else {list = event.target.closest('.taskGroup').querySelector('p').textContent;}
+    else {list = event.target.closest('p').textContent;}
     document.querySelector('.task-list').textContent = ''
     tasksData.forEach(task => {
-        if (task.list.name == list) {displayTask(task);}
+        if (task.list == undefined) {}
+        else if (task.list.name == list) {displayTask(task);}
     });
-    if (list == 'Tasks') {tasksData.forEach(task => {
-            if (task.list.label == list) {displayTask(task);}
-        });}
-    if (list == 'Tasks') {changeHeader(list, homeIcon)}
-    else {changeHeader(list, listIcon)}
+    changeHeader(list, listIcon);
 }
 
 function chooseDisplay(item) {
@@ -208,11 +197,6 @@ function dispalyAddListsAndLabels() {
     newList.classList.add('new-list');
     newList.addEventListener('click', addList);
     sidebarFooter.appendChild(newList);
-    const newLabelIcon = document.createElement('img');
-    newLabelIcon.src = newLabel;
-    newLabelIcon.classList.add('new-group');
-    newLabelIcon.addEventListener('click', addLabel);
-    sidebarFooter.appendChild(newLabelIcon);
     sidebar.appendChild(sidebarFooter)
 }
 
@@ -222,7 +206,6 @@ function addList() {
     document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
     document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
     displayLists()
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
     dispalyAddListsAndLabels()
     let lastList = document.querySelector('div.groupDiv').lastChild.querySelector('p')
     const textarea = document.createElement("textarea");
@@ -273,72 +256,11 @@ function setLatestListName() {
 
 }
   
-
-function addLabel() {
-    let newList = new Label()
-    console.log(labelsData)
-    document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
-    document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
-    displayLists()
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
-    dispalyAddListsAndLabels()
-    let lastLabel = document.querySelector('div.groupDiv').lastChild.querySelector('p')
-    const textarea = document.createElement("textarea");
-    textarea.value = 'Untitled Label';
-    textarea.style.width = "100%";
-    textarea.style.height = "auto";
-    lastLabel.replaceWith(textarea)
-    textarea.focus();
-    textarea.select();
-    textarea.style.backgroundColor = '#3b3b3b'
-    textarea.style.color = 'white'
-    textarea.keypressHandler = (event) => {
-        if (event.key === 'Enter') {
-            setLatestLabelName();
-        }
-    };
-    textarea.addEventListener("keypress", textarea.keypressHandler);    
-    textarea.addEventListener("blur", setLatestLabelName)
-}
-
-function setLatestLabelName() {
-    const textarea = document.querySelector('textarea');
-    const baseTitle = textarea.value.trim();
-    const keypressHandler = (event) => {
-        if (event.key === 'Enter') {
-            setLatestLabelName();
-        }
-    };
-    textarea.removeEventListener('keypress', textarea.keypressHandler);
-    textarea.removeEventListener('blur', setLatestLabelName);
-
-    if (baseTitle) {
-        // Start with the base title
-        let newTitle = baseTitle;
-        let suffix = 1;
-        // Check other lists (all except the new one at the end)
-        while (labelsData.slice(0, labelsData.length - 1).some(label => label.name === newTitle)) {newTitle = `${baseTitle} (${suffix})`;suffix++;}
-        labelsData[labelsData.length - 1].name = newTitle;
-        const newTitleElement = document.createElement("p");
-        newTitleElement.textContent = newTitle;
-        newTitleElement.style.wordBreak = "break-word";
-        textarea.replaceWith(newTitleElement);
-    } else {
-      // If the new title is empty, revert to the original title (assuming titleElement exists)
-        textarea.replaceWith(titleElement);
-    }
-}
-
 function verticalDotsClicked() {
     const listSlashLabelName = event.target.parentElement.querySelector('p').textContent.trim();
     if (listsData.find(item => item.name === listSlashLabelName)) { 
         console.log('Match found'); 
         listDotsClicked(listSlashLabelName)
-    }
-
-    else if (labelsData.find(item => item.name === listSlashLabelName)) {
-        console.log('Match found'); 
-        labelDotsClicked(listSlashLabelName)
     }
 }
 
@@ -346,8 +268,7 @@ function listDotsClicked(listSlashLabelName) {
     const listOptionsUl = document.createElement('ul');
     listOptionsUl.classList.add('list-options-ul');
     listOptionsUl.innerHTML = `<li class="delete-list">Delete List</li>
-                                <li class="delete-list-with-tasks">Delete with Tasks</li>
-        <li class="change-label">Change Label</li>`
+                                <li class="delete-list-with-tasks">Delete with Tasks</li>`
     document.querySelector('#content').appendChild(listOptionsUl)
     listOptionsUl.style.position = 'fixed'
     const rect = event.target.getBoundingClientRect();
@@ -363,142 +284,15 @@ function listDotsClicked(listSlashLabelName) {
     listOptionsUl.style.color = '#788cde'
     listOptionsUl.style.cursor = 'pointer'
     document.querySelector('.delete-list').addEventListener('click', () => deleteList(listSlashLabelName))
-    document.querySelector('.change-label').addEventListener('click', (event) => changeLabel(listSlashLabelName, event))
     document.querySelector('.delete-list-with-tasks').addEventListener('click', () => deleteListsWithTasks(listSlashLabelName))
     document.addEventListener('click', clickedOutsidelistOptionsUl, true)
 }
 
-function labelDotsClicked(listSlashLabelName) {
-    const listOptionsUl = document.createElement('ul');
-    listOptionsUl.classList.add('list-options-ul');
-    listOptionsUl.innerHTML = `<li class="delete-label">Delete Label</li> <li class="delete-label-with-lists">Delete with Lists</li>`
-    document.querySelector('#content').appendChild(listOptionsUl)
-    listOptionsUl.style.position = 'fixed'
-    const rect = event.target.getBoundingClientRect();
-    const yPos = window.scrollY + rect.top - 60;
-    listOptionsUl.style.top = yPos + 'px';
-    listOptionsUl.style.left = `calc(10px + ${document.querySelector('#sidebar').clientWidth}px)`
-    listOptionsUl.style.zIndex = '10000'
-    listOptionsUl.style.border = '2px solid #3b3b3b'
-    listOptionsUl.style.padding = '5px'
-    listOptionsUl.style.borderRadius = '8px'
-    listOptionsUl.style.listStyle = 'none'
-    listOptionsUl.style.backgroundColor = '#1c1c1c'
-    listOptionsUl.style.color = '#788cde'
-    listOptionsUl.style.cursor = 'pointer'
-    document.querySelector('.delete-label').addEventListener('click', () => deleteLabel(listSlashLabelName))
-    document.querySelector('.delete-label-with-lists').addEventListener('click', () => deleteLabelsWithLists(listSlashLabelName))
-    document.addEventListener('click', clickedOutsidelistOptionsUl, true)
-}
-
-function deleteLabel(listSlashLabelName) {
-    const existingTasksObject = listsData.find(item => item.name === 'Tasks');
-    tasksData.forEach(task => {
-        if (task.list.name == listSlashLabelName) {task.list = existingTasksObject;}
-    })
-    const indexList = labelsData.findIndex(list => list.name === listSlashLabelName);
-
-    // If found, remove it using splice()
-    if (indexList !== -1) {
-        labelsData.splice(indexList, 1);
-    }
-
-    const index = listsAndLabelsData.findIndex(list => list.name === listSlashLabelName);
-    if (index !== -1) {
-        listsAndLabelsData.splice(index, 1);
-    }
-
-
-    console.log('Updated listsData:', labelsData, listsAndLabelsData);
-    // listsAndLabelsData = listsAndLabelsData.filter(list => list.name !== listSlashLabelName)
-    const groupDiv = document.querySelector('div.groupDiv');
-    while (groupDiv.children.length > 1) {
-        groupDiv.removeChild(groupDiv.lastChild);
-    }
-    displayLists()
-    document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)').src = homeIcon;
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
-}
-
-function deleteLabelsWithLists(listSlashLabelName) {
-    // 1. Remove all tasks whose list label matches
-    for (let i = tasksData.length - 1; i >= 0; i--) {
-      if (tasksData[i].list.label === listSlashLabelName) {
-        tasksData.splice(i, 1);
-      }
-    }
-  
-    // 2. Remove the label from labelsData
-    for (let i = labelsData.length - 1; i >= 0; i--) {
-      if (labelsData[i].name === listSlashLabelName) {
-        labelsData.splice(i, 1);
-      }
-    }
-  
-    // 3. Remove all lists from listsData whose label matches
-    for (let i = listsData.length - 1; i >= 0; i--) {
-      if (listsData[i].label === listSlashLabelName) {
-        listsData.splice(i, 1);
-      }
-    }
-  
-    // 4. Remove all items from listsAndLabelsData that are either:
-    //    - a label with the given name, or
-    //    - a list whose label matches the given label name.
-    for (let i = listsAndLabelsData.length - 1; i >= 0; i--) {
-      const item = listsAndLabelsData[i];
-      if ((item.name === listSlashLabelName) || (item.label === listSlashLabelName)) {
-        listsAndLabelsData.splice(i, 1);
-      }
-    }
-  
-    console.log('Updated tasksData:', tasksData);
-    console.log('Updated listsData:', listsData);
-    console.log('Updated labelsData:', labelsData);
-    console.log('Updated listsAndLabelsData:', listsAndLabelsData);
-  
-    // 5. Update the UI:
-    // Clear the groupDiv (keeping only the first child)
-    const groupDiv = document.querySelector('div.groupDiv');
-    while (groupDiv.children.length > 1) {
-      groupDiv.removeChild(groupDiv.lastChild);
-    }
-  
-    // Re-display the lists (this function should re-render your sidebar lists, etc.)
-    displayLists();
-  
-    // Replace the 3rd sidebar div with the 5th (if this is part of your UI refresh)
-    const thirdDiv = document.querySelector('#sidebar > div:nth-child(3)');
-    const fifthDiv = document.querySelector('#sidebar > div:nth-child(5)');
-    if (thirdDiv && fifthDiv) {
-      thirdDiv.replaceWith(fifthDiv);
-    }
-  
-    // Update the home icon
-    const homeIconImg = document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)');
-    if (homeIconImg) {
-      homeIconImg.src = homeIcon;
-    }
-  
-    // Remove the vertical dots image from the first taskGroup in the sidebar
-    const groupDivFirst = document.querySelector('#sidebar > div.groupDiv > div:nth-child(1)');
-    if (groupDivFirst) {
-      const verticalDotsImg = groupDivFirst.querySelector('img.vertical-dots');
-      if (verticalDotsImg) {
-        groupDivFirst.removeChild(verticalDotsImg);
-      }
-    }
-  
-    // Remove the label options list from #content if it exists
-    document.querySelector('#content > ul.label-options-list')?.remove();
-  }
-  
-
 function deleteList(listSlashLabelName) {
     const existingTasksObject = listsData.find(item => item.name === 'Tasks');
     tasksData.forEach(task => {
-        if (task.list.name == listSlashLabelName) {task.list = existingTasksObject;}
+        if (task.list == undefined) {}
+        else if (task.list.name == listSlashLabelName) {task.list = undefined; displayTask(task);}
     })
     const indexList = listsData.findIndex(list => list.name === listSlashLabelName);
 
@@ -507,13 +301,7 @@ function deleteList(listSlashLabelName) {
         listsData.splice(indexList, 1);
     }
 
-    const index = listsAndLabelsData.findIndex(list => list.name === listSlashLabelName);
-    if (index !== -1) {
-        listsAndLabelsData.splice(index, 1);
-    }
-
-
-    console.log('Updated listsData:', listsData, listsAndLabelsData);
+    console.log('Updated listsData:', listsData);
     // listsAndLabelsData = listsAndLabelsData.filter(list => list.name !== listSlashLabelName)
     const groupDiv = document.querySelector('div.groupDiv');
     while (groupDiv.children.length > 1) {
@@ -521,8 +309,6 @@ function deleteList(listSlashLabelName) {
     }
     displayLists()
     document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)').src = homeIcon;
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
 }
 
 function deleteListsWithTasks(listSlashLabelName) {
@@ -539,13 +325,7 @@ function deleteListsWithTasks(listSlashLabelName) {
         listsData.splice(indexList, 1);
     }
 
-    const index = listsAndLabelsData.findIndex(list => list.name === listSlashLabelName);
-    if (index !== -1) {
-        listsAndLabelsData.splice(index, 1);
-    }
-
-
-    console.log('Updated listsData:', listsData, listsAndLabelsData);
+    console.log('Updated listsData:', listsData);
     // listsAndLabelsData = listsAndLabelsData.filter(list => list.name !== listSlashLabelName)
     const groupDiv = document.querySelector('div.groupDiv');
     while (groupDiv.children.length > 1) {
@@ -553,109 +333,7 @@ function deleteListsWithTasks(listSlashLabelName) {
     }
     displayLists()
     document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)').src = homeIcon;
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
 }
-
-function changeLabel(listSlashLabelName, event) {
-    event.stopPropagation();
-    const labelsList = document.createElement('ul');
-    // Add a class for easier styling (optional)
-    labelsList.classList.add('label-options-list');
-    
-    // Create a default "Tasks" option
-    let labelNameItem = document.createElement('li');
-    labelNameItem.textContent = 'Tasks';
-    labelsList.appendChild(labelNameItem);
-    
-    // Create list items for each label in labelsData
-    labelsData.forEach(label => {
-        let li = document.createElement('li');
-        li.textContent = label.name;
-        labelsList.appendChild(li);
-    });
-    
-    // Append the list to the #content container
-    document.querySelector('#content').appendChild(labelsList);
-    
-    // Set fixed positioning and the top/left coordinates
-    labelsList.style.position = 'fixed';
-    // Use event.pageY for the vertical position of the click
-    const yPos = event.pageY;
-    labelsList.style.top = yPos + 'px';
-    labelsList.style.left = `calc(10px + ${document.querySelector('#sidebar').clientWidth}px)`;
-    labelsList.style.zIndex = '10000';
-    labelsList.style.border = '2px solid #3b3b3b';
-    labelsList.style.padding = '5px';
-    labelsList.style.borderRadius = '8px';
-    labelsList.style.listStyle = 'none';
-    labelsList.style.backgroundColor = '#1c1c1c';
-    labelsList.style.color = '#788cde';
-    labelsList.style.cursor = 'pointer';
-    labelsList.style.maxHeight = '12.5vh';
-    labelsList.style.overflowY = 'auto';
-    labelsList.querySelectorAll('*').forEach(item => {item.addEventListener('click', () => changeLabelName(item.textContent, listSlashLabelName));})
-    
-    console.log(labelsData, listsData, listsAndLabelsData);
-    clickedOutsidelistOptionsUl();
-    document.addEventListener('click', (event) => {
-        const labelOptionsList = document.querySelector('.label-options-list');
-        if (labelOptionsList && !labelOptionsList.contains(event.target)) {
-            labelOptionsList.remove();
-        }
-    });
-}
-
-function changeLabelName(newLabel, listSlashLabelName) {
-    // Update tasks whose list name matches listSlashLabelName.
-    tasksData.forEach(task => {
-        if (task.list.name === listSlashLabelName) {
-            task.list.label = newLabel;
-        }
-    });
-
-    // Update the actual list object in listsData.
-    const listObj = listsData.find(list => list.name === listSlashLabelName);
-    if (listObj) {
-        listObj.label = newLabel;
-    }
-    
-    console.log(tasksData);
-    
-    // Refresh the UI (this function should re-render your lists, etc.)
-    displayLists();
-
-    // Update sidebar elements.
-    // Replace the 3rd div with the 5th div (if that’s part of your UI refresh).
-    const thirdDiv = document.querySelector('#sidebar > div:nth-child(3)');
-    const fifthDiv = document.querySelector('#sidebar > div:nth-child(5)');
-    if (thirdDiv && fifthDiv) {
-        thirdDiv.replaceWith(fifthDiv);
-    }
-
-    // Set the home icon image source.
-    const homeIconImg = document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img:nth-child(1)');
-    if (homeIconImg) {
-        homeIconImg.src = homeIcon;
-    }
-
-    // Remove the vertical-dots image from the first taskGroup in the sidebar.
-    const groupDivFirst = document.querySelector('#sidebar > div.groupDiv > div:nth-child(1)');
-    if (groupDivFirst) {
-        const verticalDotsImg = groupDivFirst.querySelector('img.vertical-dots');
-        if (verticalDotsImg) {
-            groupDivFirst.removeChild(verticalDotsImg);
-        }
-    }
-
-    // Remove the label options list from #content.
-    const labelOptionsList = document.querySelector('#content > ul.label-options-list');
-    if (labelOptionsList) {
-        labelOptionsList.remove();
-    }
-}
-
-
 
 function clickedOutsidelistOptionsUl() {
     document.querySelector('#content > ul.list-options-ul')?.remove();

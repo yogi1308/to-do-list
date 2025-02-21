@@ -26,7 +26,8 @@ function displayTask(task) {
     taskItemName.classList.add('task-item-name')
     taskItem.classList.add('task-item');
     taskItemName.textContent = task.task;
-    taskItemGroup.textContent = task.list.name;
+    if (task.list == undefined) {}
+    else if(task.list != undefined) {taskItemGroup.textContent = task.list.name;}
     taskItemTextContentDiv.appendChild(taskItemName);
     taskItemTextContentDiv.appendChild(taskItemGroup);
 

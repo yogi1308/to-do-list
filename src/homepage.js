@@ -1,6 +1,6 @@
 // delete, note, label, local save, edit tasks from quick view
 
-import { tasks, tasksData, listsData, listsAndLabelsData } from './tasks-data.js';
+import { tasks, tasksData, listsData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
 import sidebarIcon from './images/sidebar.svg'
@@ -12,7 +12,6 @@ import star from './images/star.svg'
 import filledStar from './images/filled-star.svg'
 import listIcon from './images/group.svg'
 import repeatSVG from './images/repeat.svg'
-import labelIcon from './images/label.svg'
 import {chooseDisplay, displayLists, dispalyAddListsAndLabels, groupSort} from './sidebar.js'
 
 let currentDate = new Date()
@@ -133,10 +132,11 @@ function addTaskFunction(taskName) {
     document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
     document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
     displayLists()
-    document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) ').removeChild(document.querySelector('#sidebar > div.groupDiv > div:nth-child(1) > img.vertical-dots'))
     dispalyAddListsAndLabels()
     removeDateFromTaskabar()
     if (document.querySelector('.list-name')) {document.querySelector('div.add-task-div').removeChild(document.querySelector('.list-name'))}
+    document.querySelector('#main > div.add-task-div > p.selected-repetition')?.remove()
+    document.querySelector('input[type="date"]').value = ''
 }
 
 function sidebarDisplayOption() {
@@ -259,6 +259,7 @@ function inputCalenderClicked(inputCalender) {
         document.head.appendChild(styleEl);
         document.querySelector('.input-list').style.paddingRight = '0.5em'
     }
+    document.querySelector('#add-task').focus()
 }
 
 function removeDateFromTaskabar() {
@@ -287,13 +288,6 @@ function inputlistClicked(event) {
     listDropdownMenu.appendChild(chooseList);
     document.querySelector('#main').appendChild(listDropdownMenu);
     document.querySelectorAll('#main > ul.list-selector > div.groupDiv > div.taskGroup > img.vertical-dots').forEach(dot => {dot.remove();});
-    document.querySelectorAll('#main div.groupDiv div.taskGroup').forEach(taskGroup => {
-        const img = taskGroup.querySelector('img');
-        if (img && img.src === labelIcon) {
-          taskGroup.remove();
-        }
-      });
-      
 }
 
 function handleClickOutside(e) {
