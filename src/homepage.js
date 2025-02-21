@@ -1,4 +1,4 @@
-// delete, note, label, local save, edit tasks from quick view
+// delete, label, local save, edit tasks from quick view
 
 import { tasks, tasksData, listsData } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'

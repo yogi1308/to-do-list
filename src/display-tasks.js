@@ -6,8 +6,9 @@ import flag from './images/flag.svg';
 import blueFlag from './images/blue-flag.svg';
 import redFlag from './images/red-flag.svg';
 import orangeFlag from './images/orange-flag.svg';
+import deleteIcon from './images/delete.svg';
 
-import {completionStatusChanged, importanceChanged, priorityChanged} from './status-change.js'
+import {completionStatusChanged, importanceChanged, priorityChanged, deleteTask} from './status-change.js'
 
 export { displayTask };
 
@@ -49,8 +50,14 @@ function displayTask(task) {
     flagIcon.classList.add('flag-icon');
     flagIcon.addEventListener('click', priorityChanged)
 
+    const deleteImg = document.createElement('img');
+    deleteImg.src = deleteIcon;
+    deleteImg.classList.add('delete-icon');
+    deleteImg.addEventListener('click', deleteTask)
+
     taskItemRight.appendChild(flagIcon);
     taskItemRight.appendChild(taskStarIcon);
+    taskItemRight.appendChild(deleteImg);
     taskItem.appendChild(taskItemLeft);
     taskItem.appendChild(taskItemRight);
     taskList.appendChild(taskItem);

@@ -9,7 +9,7 @@ import completedFilled from './images/completed-filled.svg';
 import { tasksData } from './tasks-data.js';
 import { view } from './sidebar.js';
 
-export { completionStatusChanged, importanceChanged, priorityChanged }
+export { completionStatusChanged, importanceChanged, priorityChanged, deleteTask }
 
 function completionStatusChanged() {
     const taskName = this.closest('.task-item').querySelector('.task-item-name').textContent;
@@ -42,4 +42,16 @@ function priorityChanged(){
             else if (task.priority == 'High') {task.priority = ""; this.src = flag;}
         }
     });
+}
+
+function deleteTask() {
+    this.closest('.task-item').remove();
+    const taskName = this.closest('.task-item').querySelector('.task-item-name').textContent;
+    const taskList = this.closest('.task-item').querySelector('.task-item-group').textContent
+    for (let i = 0; i < tasksData.length; i++) {
+        if (tasksData[i].task == taskName && (tasksData[i].list == undefined || tasksData[i].list.name == taskList)) {
+            tasksData.splice(i, 1);
+            break
+        }
+    }
 }
