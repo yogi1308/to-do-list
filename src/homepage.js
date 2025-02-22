@@ -517,40 +517,6 @@ function handleListCreation() {
     selection.addRange(newRange);
 }
 
-function insertImage() {
-    const url = prompt("Enter image URL:");
-    if (!url) return;
-
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.maxWidth = '200px';
-    
-    const selection = window.getSelection();
-    if (selection.rangeCount) {
-        const range = selection.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(img);
-    }
-}
-
-function insertDocument() {
-    const url = prompt("Document URL:");
-    const text = prompt("Link text:", "View Document");
-    if (!url || !text) return;
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.textContent = text;
-    
-    const selection = window.getSelection();
-    if (selection.rangeCount) {
-        const range = selection.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(link);
-    }
-}
-
 function handleFileUpload(event) {
     const file = event.target.files[0]; // Get the selected file
     if (!file) return;
@@ -618,14 +584,14 @@ function inputNotesClicked() {
     notesEditor.style.border = '1px solid white'
     notesEditor.focus()
 
-    if (notes != '') {document.querySelector('#editor').textContent = notes}
+    if (notes != '') { document.querySelector('#editor').innerHTML = notes }
 
     document.addEventListener('click', handleClickOutsideForNotes, true);
 }
 
 function handleClickOutsideForNotes(e) {
     if (!document.querySelector('.notes-editor').contains(e.target)) {
-        if (document.querySelector('#editor').textContent != 'Enter your Notes here...') {notes = document.querySelector('#editor').textContent.trim()}
+        if (document.querySelector('#editor').innerHTML.trim() != 'Enter your Notes here...') { notes = document.querySelector('#editor').innerHTML.trim()}
         document.querySelector('.notes-editor').remove();
         document.removeEventListener('click', handleClickOutsideForNotes, true);
         document.querySelector('#add-task').focus()

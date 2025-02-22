@@ -238,7 +238,7 @@ function quickView() {
 
         const taskItemNotesValue = document.createElement('p');
         if (taskObject.notes == undefined || taskObject.notes == "") {taskItemNotesValue.textContent = "None"} 
-        else {taskItemNotesValue.textContent = taskObject.notes}
+        else {taskItemNotesValue.innerHTML = taskObject.notes}
         taskItemNotesValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemNotesValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemNotesValue);
