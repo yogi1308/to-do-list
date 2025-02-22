@@ -78,30 +78,53 @@ function displayTask(task) {
 }
 
 function quickView() {
+    console.log(tasksData)
     const item = event.target.closest('.task-item');
-    let taskObject = ''
-    tasksData.forEach(tasks => {
-        if ((tasks.task == item.querySelector('.task-item-name').textContent) && (!item.querySelector('#main > div.task-list > div > div.task-item-right > img.task-star-icon')) && (!item.querySelector('#main > div.task-list > div > div.task-item-right > img.flag-icon')) && (!item.querySelector('#main > div.task-list > div > div.task-item-left > img.task-complete-icon')) && (!item.querySelector('#main > div.task-list > div > div.task-item-left > div > p.task-item-group'))) {
-            taskObject = tasks;
-        }
-        else {
-            const taskNameMatch = tasks.task == item.querySelector('.task-item-name').textContent;
-            const importantMatch = (item.querySelector('.task-star-icon').src == filledStar && tasks.important == true) || 
-                                (item.querySelector('.task-star-icon').src == star && (tasks.important == false || tasks.important == undefined));
-            const priorityMatch = (item.querySelector('.flag-icon').src == flag && (tasks.priority == "" || tasks.priority == "None")) || 
-                                (item.querySelector('.flag-icon').src == blueFlag && tasks.priority == "Low") || 
-                                (item.querySelector('.flag-icon').src == orangeFlag && tasks.priority == "Medium") || 
-                                (item.querySelector('.flag-icon').src == redFlag && tasks.priority == "High");
-            const completedMatch = (item.querySelector('.task-complete-icon').src == completedFilled && tasks.completed == true) || 
-                                (item.querySelector('.task-complete-icon').src == completed && tasks.completed == false);
-            const listMatch = (item.querySelector('.task-item-group').textContent == '' && tasks.list == undefined) || 
-                            (item.querySelector('.task-item-group').textContent == tasks.list.name);
+    let taskObject = null;
+    const taskNameText = item.querySelector('.task-item-name')?.textContent || "";
+    const starIconSrc = item.querySelector('.task-star-icon')?.src || "";
+    const flagIconSrc = item.querySelector('.flag-icon')?.src || "";
+    const completeIconSrc = item.querySelector('.task-complete-icon')?.src || "";
+    const listText = item.querySelector('.task-item-group')?.textContent || "";
 
-            if (taskNameMatch && importantMatch && priorityMatch && completedMatch && listMatch) {
-                taskObject = tasks;
-            }
+    for (const tasks of tasksData) {
+    // First check: if none of the icons and list-group exist
+    if (
+        tasks.task === taskNameText &&
+        !item.querySelector('.task-star-icon') &&
+        !item.querySelector('.flag-icon') &&
+        !item.querySelector('.task-complete-icon') &&
+        !item.querySelector('.task-item-group')
+        ) {
+        taskObject = tasks;
+        break;
+    } else {
+        const taskNameMatch = tasks.task === taskNameText;
+        const importantMatch =
+        (starIconSrc === filledStar && tasks.important === true) ||
+        (starIconSrc === star && (!tasks.important || tasks.important === undefined));
+        const priorityMatch =
+        (flagIconSrc === flag && (tasks.priority === "" || tasks.priority === "None")) ||
+        (flagIconSrc === blueFlag && tasks.priority === "Low") ||
+        (flagIconSrc === orangeFlag && tasks.priority === "Medium") ||
+        (flagIconSrc === redFlag && tasks.priority === "High");
+        const completedMatch =
+        (completeIconSrc === completedFilled && tasks.completed === true) ||
+        (completeIconSrc === completed && tasks.completed === false);
+        let listMatch = false;
+        if (tasks.list === undefined) {
+        listMatch = listText === "";
+        } else {
+        listMatch = listText === tasks.list.name;
         }
-    })
+        
+        if (taskNameMatch && importantMatch && priorityMatch && completedMatch && listMatch) {
+        taskObject = tasks;
+        break;
+        }
+    }
+    }
+
     if (item.querySelector('div.task-item-right > img.arrow').src == down) {
         item.querySelector('#main > div.task-list > div > div.task-item-left > div > p.task-item-group').remove()
         item.querySelector('#main > div.task-list > div > div.task-item-right > img.delete-icon').remove()
@@ -142,7 +165,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemList);
 
         const taskItemListValue = document.createElement('p');
-        taskItemListValue.textContent = taskObject.list.name;
+        if (taskObject.list == undefined) {taskItemListValue.textContent = "None"} 
+        else {taskItemListValue.textContent = taskObject.list.name}
         taskItemListValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemListValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemListValue);
@@ -153,7 +177,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemPriority);
 
         const taskItemPriorityValue = document.createElement('p');
-        taskItemPriorityValue.textContent = taskObject.priority;
+        if (taskObject.priority == "") {taskItemPriorityValue.textContent = "None"} 
+        else {taskItemPriorityValue.textContent = taskObject.priority}
         taskItemPriorityValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemPriorityValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemPriorityValue);
@@ -164,7 +189,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemImportant);
 
         const taskItemImportanceValue = document.createElement('p');
-        taskItemImportanceValue.textContent = taskObject.important;
+        if (taskObject.important == undefined) {taskItemImportanceValue.textContent = "false"} 
+        else {taskItemImportanceValue.textContent = taskObject.important}
         taskItemImportanceValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemImportanceValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemImportanceValue);
@@ -175,7 +201,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemCompleted);
 
         const taskItemCompletedValue = document.createElement('p');
-        taskItemCompletedValue.textContent = taskObject.completed;
+        if (taskObject.completed == undefined) {taskItemCompletedValue.textContent = "false"} 
+        else {taskItemCompletedValue.textContent = taskObject.completed}
         taskItemCompletedValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemCompletedValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemCompletedValue);
@@ -186,7 +213,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemDate);
 
         const taskItemDateValue = document.createElement('p');
-        taskItemDateValue.textContent = taskObject.date;
+        if (taskObject.date == undefined || taskObject.date == "") {taskItemDateValue.textContent = "None"} 
+        else {taskItemDateValue.textContent = taskObject.date}
         taskItemDateValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemDateValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemDateValue);
@@ -197,7 +225,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemRepeat);
 
         const taskItemRepeatValue = document.createElement('p');
-        taskItemRepeatValue.textContent = taskObject.repeat;
+        if (taskObject.repeat == undefined || taskObject.repeat == "") {taskItemRepeatValue.textContent = "None"} 
+        else {taskItemRepeatValue.textContent = taskObject.repeat}
         taskItemRepeatValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemRepeatValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemRepeatValue);
@@ -208,7 +237,8 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemNote);
 
         const taskItemNotesValue = document.createElement('p');
-        taskItemNotesValue.textContent = taskObject.notes;
+        if (taskObject.notes == undefined || taskObject.notes == "") {taskItemNotesValue.textContent = "None"} 
+        else {taskItemNotesValue.textContent = taskObject.notes}
         taskItemNotesValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemNotesValue.style.paddingLeft = '10px'
         taskAttributeContainer.appendChild(taskItemNotesValue);
@@ -216,7 +246,7 @@ function quickView() {
         item.appendChild(taskAttributeContainer);
         
         const pElements = taskAttributeContainer.querySelectorAll('p');
-
+ 
 
     }
     else {
