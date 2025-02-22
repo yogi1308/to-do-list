@@ -126,18 +126,18 @@ function quickView() {
     }
 
     if (item.querySelector('div.task-item-right > img.arrow').src == down) {
-        item.querySelector('#main > div.task-list > div > div.task-item-left > div > p.task-item-group').remove()
-        item.querySelector('#main > div.task-list > div > div.task-item-right > img.delete-icon').remove()
-        item.querySelector('#main > div.task-list > div > div.task-item-right > img.task-star-icon').remove()
-        item.querySelector('#main > div.task-list > div > div.task-item-right > img.flag-icon').remove()
-        item.querySelector('#main > div.task-list > div > div.task-item-left > img.task-complete-icon').remove()
-        item.querySelector('#main > div.task-list > div > div.task-item-right > img.arrow').src = up
+        item.querySelector('div.task-item-left > div > p.task-item-group').remove()
+        item.querySelector('div.task-item-right > img.delete-icon').remove()
+        item.querySelector('div.task-item-right > img.task-star-icon').remove()
+        item.querySelector('div.task-item-right > img.flag-icon').remove()
+        item.querySelector('div.task-item-left > img.task-complete-icon').remove()
+        item.querySelector('div.task-item-right > img.arrow').src = up
 
         const taskItemLeftRighContainer = document.createElement('div')
         taskItemLeftRighContainer.style.display = 'flex'
         taskItemLeftRighContainer.style.justifyContent = 'space-between'
-        taskItemLeftRighContainer.appendChild(item.querySelector('#main > div.task-list > div > div.task-item-left'))
-        taskItemLeftRighContainer.appendChild(item.querySelector('#main > div.task-list > div > div.task-item-right'))
+        taskItemLeftRighContainer.appendChild(item.querySelector('div > div.task-item-left'))
+        taskItemLeftRighContainer.appendChild(item.querySelector('div > div.task-item-right'))
         item.appendChild(taskItemLeftRighContainer)
         taskItemLeftRighContainer.style.width = '100%'
         item.style.flexDirection = 'column'
