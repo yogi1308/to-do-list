@@ -29,7 +29,6 @@ function importanceChanged() {
             else {task.important = true; this.src = filledStar;}
         }
     });
-
 }
 
 function priorityChanged(){

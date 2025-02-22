@@ -138,7 +138,13 @@ body {
 .input-star, .input-repeat, .input-notes {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
 
 .input-list {background-color: #3b3b3b; cursor: pointer;}
-#main > ul > div > div > p, .delete-icon {cursor: pointer;}
+#main > ul > div > div > p, .delete-icon, div.task-item-right > img.arrow {cursor: pointer;}
+
+#main > ul > div {max-width: 50%}
+
+#main > ul > div::-webkit-scrollbar {
+  display: none;
+}
 
 input::placeholder {
   color: #788cde; /* Change this to your desired color */
@@ -299,6 +305,8 @@ img.task-complete-icon {
 
 .task-item-name {
   line-height: 1.25;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .task-item-group {
@@ -306,7 +314,22 @@ img.task-complete-icon {
   font-size: 0.7em;
   padding: 0;
   line-height: 1.25;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
+
+.task-item-left > div {
+  max-width: 100%; 
+}
+
+.task-item-left {
+  max-width: 70%;         /* 70% of the parent container's width */
+  white-space: nowrap;     /* Prevent line wrapping */
+  overflow-x: auto;        /* Allow horizontal scrolling if overflow */
+  scrollbar-width: none;   /* Hide scrollbar in Firefox */
+  -ms-overflow-style: none;/* Hide scrollbar in IE/Edge */
+}
+
 
 .sidebar-list {
   display: flex;
@@ -341,6 +364,8 @@ img.task-complete-icon {
   max-height: 400px; /* Set a maximum height */
   overflow-y: auto;
 }
+
+
 
 .taskGroup {
   display: flex;
@@ -495,7 +520,7 @@ textArea {
 /* Entire scrollbar container */
 ::-webkit-scrollbar {
     width: 5px; /* Adjust width for vertical scrollbars */
-    height: 8px; /* Adjust height for horizontal scrollbars */
+    height: 5px; /* Adjust height for horizontal scrollbars */
 }
 
 /* Scrollbar track (background) */
