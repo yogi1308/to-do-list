@@ -239,6 +239,7 @@ function quickView() {
         editCompletion.classList.add('edit-completed')
         if (taskObject.completed == '' || taskObject.completed == false || taskObject.completed == undefined) {editCompletion.src = completed}
         else if (taskObject.completed == true) {editCompletion.src = completedFilled}
+        editCompletion.style.width = '1.35em'
         taskAttributeContainer.appendChild(taskItemCompletedValue);
         taskItemCompletedValue.appendChild(editCompletion);
         taskItemCompletedValue.style.display = 'flex'
@@ -256,7 +257,22 @@ function quickView() {
         else {taskItemDateValue.textContent = taskObject.date}
         taskItemDateValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemDateValue.style.paddingLeft = '10px'
+        const editDate = document.createElement('input');
+        editDate.classList.add('edit-completed')
+        editDate.type = 'date'
+        editDate.style.width = '3em'
+        editDate.style.color = 'white'
+        editDate.style.backgroundColor = '#363636'
+        editDate.style.border = 'none'
+        editDate.style.padding = '0px'
         taskAttributeContainer.appendChild(taskItemDateValue);
+        taskItemDateValue.appendChild(editDate);
+        taskItemDateValue.style.display = 'flex'
+        taskItemDateValue.style.justifyContent = 'space-between'
+        taskItemDateValue.style.minGap = '5px'
+        editDate.addEventListener('change', editDateInQuickView)
+        editDate.style.position = 'relative'
+        editDate.style.left = '18px'
 
         const taskItemRepeat = document.createElement('p');
         taskItemRepeat.textContent = "Repeat";
@@ -386,4 +402,15 @@ function changeImportanceInQuickview() {
     else if (currImportance === 'true') {taskObject.important = false; currImportanceElement.textContent = 'false'; editImportanceElement.src = star}
 
     currImportanceElement.appendChild(editImportanceElement);
+}
+
+function editDateInQuickView() {
+    const currDateElement = event.target.closest('p');
+    const currDate = currDateElement.textContent;
+    const editDateElement = currDateElement.querySelector('input');
+
+    taskObject.date = editDateElement.value;
+    currDateElement.textContent = editDateElement.value;
+    currDateElement.appendChild(editDateElement);
+    console.log(tasksData)
 }
