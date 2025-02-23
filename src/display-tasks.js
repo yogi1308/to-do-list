@@ -213,7 +213,17 @@ function quickView() {
         else {taskItemImportanceValue.textContent = taskObject.important}
         taskItemImportanceValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemImportanceValue.style.paddingLeft = '10px'
+        const editImportance = document.createElement('img');
+        editImportance.classList.add('edit-completed')
+        if (taskObject.important == '' || taskObject.important == false || taskObject.important == undefined) {editImportance.src = star}
+        else if (taskObject.important == true) {editImportance.src = filledStar}
+        console.log(tasksData)
         taskAttributeContainer.appendChild(taskItemImportanceValue);
+        taskItemImportanceValue.appendChild(editImportance);
+        taskItemImportanceValue.style.display = 'flex'
+        taskItemImportanceValue.style.justifyContent = 'space-between'
+        taskItemImportanceValue.style.minGap = '5px'
+        editImportance.addEventListener('click', changeImportanceInQuickview)
 
         const taskItemCompleted = document.createElement('p');
         taskItemCompleted.textContent = "Completed";
@@ -225,7 +235,16 @@ function quickView() {
         else {taskItemCompletedValue.textContent = taskObject.completed}
         taskItemCompletedValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemCompletedValue.style.paddingLeft = '10px'
+        const editCompletion = document.createElement('img');
+        editCompletion.classList.add('edit-completed')
+        if (taskObject.completed == '' || taskObject.completed == false || taskObject.completed == undefined) {editCompletion.src = completed}
+        else if (taskObject.completed == true) {editCompletion.src = completedFilled}
         taskAttributeContainer.appendChild(taskItemCompletedValue);
+        taskItemCompletedValue.appendChild(editCompletion);
+        taskItemCompletedValue.style.display = 'flex'
+        taskItemCompletedValue.style.justifyContent = 'space-between'
+        taskItemCompletedValue.style.minGap = '5px'
+        editCompletion.addEventListener('click', changeCompletionInQuickView)
 
         const taskItemDate = document.createElement('p');
         taskItemDate.textContent = "Due Date";
@@ -345,4 +364,26 @@ function changePriorityInQuickview() {
     else if (currPriority === 'High') {taskObject.priority = '';currPriorityElement.textContent = "None";editPriorityElement.src = flag;}
 
     currPriorityElement.appendChild(editPriorityElement);
+}
+
+function changeCompletionInQuickView() {
+    const currCompletionElement = event.target.closest('p');
+    const currCompletion = currCompletionElement.textContent;
+    const editCompletionElement = currCompletionElement.querySelector('.edit-completed');
+
+    if (currCompletion === "" || currCompletion === "false") {taskObject.completed = true; currCompletionElement.textContent = 'true';editCompletionElement.src = completedFilled; editCompletionElement.style.width = '1.35em'} 
+    else if (currCompletion === 'true') {taskObject.completed = false;currCompletionElement.textContent = 'false';editCompletionElement.src = completed; editCompletionElement.style.width = '1.35em'}
+
+    currCompletionElement.appendChild(editCompletionElement);
+}
+
+function changeImportanceInQuickview() {
+    const currImportanceElement = event.target.closest('p');
+    const currImportance = currImportanceElement.textContent;
+    const editImportanceElement = currImportanceElement.querySelector('.edit-completed');
+
+    if (currImportance === "" || currImportance === "false") {taskObject.important = true; currImportanceElement.textContent = 'true'; editImportanceElement.src = filledStar} 
+    else if (currImportance === 'true') {taskObject.important = false; currImportanceElement.textContent = 'false'; editImportanceElement.src = star}
+
+    currImportanceElement.appendChild(editImportanceElement);
 }
