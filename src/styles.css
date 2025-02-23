@@ -138,7 +138,7 @@ body {
 .input-star, .input-repeat, .input-notes {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
 
 .input-list {background-color: #3b3b3b; cursor: pointer;}
-#main > ul > div > div > p, .delete-icon, div.task-item-right > img.arrow {cursor: pointer;}
+#main > ul > div > div > p, .delete-icon, div.task-item-right > img.arrow, .edit-icon {cursor: pointer;}
 
 #main > ul > div {max-width: 50%}
 

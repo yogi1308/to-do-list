@@ -9,10 +9,14 @@ import orangeFlag from './images/orange-flag.svg';
 import deleteIcon from './images/delete.svg';
 import down from './images/down.svg';
 import up from './images/up.svg';
+import editSVG from './images/edit.svg';
 
-import {tasksData} from './tasks-data.js'
+import {listsData, tasksData} from './tasks-data.js'
+import {displayLists, groupSort} from './sidebar.js';
 
 import {completionStatusChanged, importanceChanged, priorityChanged, deleteTask} from './status-change.js';
+
+let taskObject = null;
 
 
 export { displayTask };
@@ -80,7 +84,6 @@ function displayTask(task) {
 function quickView() {
     console.log(tasksData)
     const item = event.target.closest('.task-item');
-    let taskObject = null;
     const taskNameText = item.querySelector('.task-item-name')?.textContent || "";
     const starIconSrc = item.querySelector('.task-star-icon')?.src || "";
     const flagIconSrc = item.querySelector('.flag-icon')?.src || "";
@@ -169,7 +172,15 @@ function quickView() {
         else {taskItemListValue.textContent = taskObject.list.name}
         taskItemListValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemListValue.style.paddingLeft = '10px'
+        const editList = document.createElement('img');
+        editList.classList.add('edit-icon')
+        editList.src = editSVG;
         taskAttributeContainer.appendChild(taskItemListValue);
+        taskItemListValue.appendChild(editList);
+        taskItemListValue.style.display = 'flex'
+        taskItemListValue.style.justifyContent = 'space-between'
+        taskItemListValue.style.minGap = '5px'
+        editList.addEventListener('click', changeListNameInQuickView)
 
         const taskItemPriority = document.createElement('p');
         taskItemPriority.textContent = "Priority";
@@ -208,7 +219,7 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemCompletedValue);
 
         const taskItemDate = document.createElement('p');
-        taskItemDate.textContent = "Date";
+        taskItemDate.textContent = "Due Date";
         taskItemDate.style.color = '#788cde'
         taskAttributeContainer.appendChild(taskItemDate);
 
@@ -244,9 +255,6 @@ function quickView() {
         taskAttributeContainer.appendChild(taskItemNotesValue);
 
         item.appendChild(taskAttributeContainer);
-        
-        const pElements = taskAttributeContainer.querySelectorAll('p');
- 
 
     }
     else {
@@ -255,3 +263,64 @@ function quickView() {
     }
 }
 
+
+function changeListNameInQuickView() {
+    const currName = event.target.closest('p')
+    document.addEventListener('click', handleClickOutside, true);
+    const listDropdownMenu = document.createElement('ul');
+    listDropdownMenu.classList.add('list-selector')
+    const chooseList = displayLists();
+    chooseList.style.height = 'auto';
+    chooseList.style.border = '2px solid #1c1c1c';
+    chooseList.style.borderRadius = '8px';  
+    chooseList.style.backgroundColor = '#3b3b3b'
+    chooseList.querySelectorAll('*').forEach(child => {child.removeEventListener('click', groupSort);});
+    chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
+      
+    currName.replaceWith(chooseList);
+    document.querySelector('#main').appendChild(listDropdownMenu);
+    chooseList.querySelectorAll('img.vertical-dots').forEach(dot => {dot.remove();});
+    chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
+}
+
+function handleClickOutside(e) {
+    if (!document.querySelector('#main > div.task-list > div > div:nth-child(2) > div').contains(e.target)) {
+        const taskItemListValue = document.createElement('p');
+        if (taskObject.list == undefined) {taskItemListValue.textContent = "None"} 
+        else {taskItemListValue.textContent = taskObject.list.name}
+        taskItemListValue.style.borderLeft = '2px solid #1c1c1c'
+        taskItemListValue.style.paddingLeft = '10px'
+        const editList = document.createElement('img');
+        editList.classList.add('edit-icon')
+        editList.src = editSVG;
+        taskItemListValue.appendChild(editList);
+        taskItemListValue.style.display = 'flex'
+        taskItemListValue.style.justifyContent = 'space-between'
+        taskItemListValue.style.minGap = '5px'
+        editList.addEventListener('click', changeListNameInQuickView)
+        document.querySelector('#main > div.task-list > div > div:nth-child(2) > div').replaceWith(taskItemListValue)
+        document.removeEventListener('click', handleClickOutside, true);
+    }
+    else {document.removeEventListener('click', handleClickOutside, true);}
+}
+
+function listSelected() {
+    const selectedListName = event.target.closest('p').textContent;
+    const selectedList = listsData.find(list => list.name === selectedListName);
+    taskObject.list = selectedList;
+    const taskItemListValue = document.createElement('p');
+    if (taskObject.list == undefined) {taskItemListValue.textContent = "None"} 
+    else {taskItemListValue.textContent = taskObject.list.name}
+    taskItemListValue.style.borderLeft = '2px solid #1c1c1c'
+    taskItemListValue.style.paddingLeft = '10px'
+    const editList = document.createElement('img');
+    editList.classList.add('edit-icon')
+    editList.src = editSVG;
+    taskItemListValue.appendChild(editList);
+    taskItemListValue.style.display = 'flex'
+    taskItemListValue.style.justifyContent = 'space-between'
+    taskItemListValue.style.minGap = '5px'
+    editList.addEventListener('click', changeListNameInQuickView)
+    document.querySelector('#main > div.task-list > div > div:nth-child(2) > div').replaceWith(taskItemListValue)
+    document.removeEventListener('click', handleClickOutside, true);
+}

@@ -298,6 +298,7 @@ function inputlistClicked(event) {
     listDropdownMenu.appendChild(chooseList);
     document.querySelector('#main').appendChild(listDropdownMenu);
     document.querySelectorAll('#main > ul.list-selector > div.groupDiv > div.taskGroup > img.vertical-dots').forEach(dot => {dot.remove();});
+
 }
 
 function handleClickOutside(e) {
