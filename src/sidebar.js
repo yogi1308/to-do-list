@@ -49,6 +49,7 @@ function displaySearchBar() {
     searchBar.placeholder = 'Search';
     sidebarList.appendChild(searchBar);
     sidebar.appendChild(sidebarList);
+    searchBar.addEventListener('input', searchTasks)
 }
 
 function sidebarItems() {
@@ -375,4 +376,14 @@ function changeListName(event, listSlashLabelName) {
             textarea.addEventListener("keypress", textarea.keypressHandler);    
             textarea.addEventListener("blur", () => setLatestListName)
         }})
+}
+
+function searchTasks() {
+    const search = document.querySelector('#search-bar').value;
+    document.querySelector('.task-list').textContent = '';
+    tasksData.forEach(task => {
+        if (task.task.toLowerCase().includes(search.toLowerCase())) {
+            displayTask(task);
+        }
+    });
 }
