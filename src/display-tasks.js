@@ -192,7 +192,16 @@ function quickView() {
         else {taskItemPriorityValue.textContent = taskObject.priority}
         taskItemPriorityValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemPriorityValue.style.paddingLeft = '10px'
+        const editPriority = document.createElement('img');
+        editPriority.classList.add('edit-priority')
+        if (taskObject.priority == "" || taskObject.priority == undefined || taskObject.priority == "None") {editPriority.src = flag}
+        else if (taskObject.priority == "Low") {editPriority.src = blueFlag} else if (taskObject.priority == "Medium") {editPriority.src = orangeFlag} else if (taskObject.priority == "High") {editPriority.src = redFlag} 
         taskAttributeContainer.appendChild(taskItemPriorityValue);
+        taskItemPriorityValue.appendChild(editPriority);
+        taskItemPriorityValue.style.display = 'flex'
+        taskItemPriorityValue.style.justifyContent = 'space-between'
+        taskItemPriorityValue.style.minGap = '5px'
+        editPriority.addEventListener('click', changePriorityInQuickview)
 
         const taskItemImportant = document.createElement('p');
         taskItemImportant.textContent = "Importance";
@@ -323,4 +332,17 @@ function listSelected() {
     editList.addEventListener('click', changeListNameInQuickView)
     document.querySelector('#main > div.task-list > div > div:nth-child(2) > div').replaceWith(taskItemListValue)
     document.removeEventListener('click', handleClickOutside, true);
+}
+
+function changePriorityInQuickview() {
+    const currPriorityElement = event.target.closest('p');
+    const currPriority = currPriorityElement.textContent;
+    const editPriorityElement = currPriorityElement.querySelector('.edit-priority');
+
+    if (currPriority === "" || currPriority === "None") {taskObject.priority = 'Low'; currPriorityElement.textContent = 'Low';editPriorityElement.src = blueFlag;} 
+    else if (currPriority === 'Low') {taskObject.priority = 'Medium';currPriorityElement.textContent = 'Medium';editPriorityElement.src = orangeFlag;} 
+    else if (currPriority === 'Medium') {taskObject.priority = 'High';currPriorityElement.textContent = 'High';editPriorityElement.src = redFlag;} 
+    else if (currPriority === 'High') {taskObject.priority = '';currPriorityElement.textContent = "None";editPriorityElement.src = flag;}
+
+    currPriorityElement.appendChild(editPriorityElement);
 }
