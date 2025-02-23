@@ -10,6 +10,7 @@ import deleteIcon from './images/delete.svg';
 import down from './images/down.svg';
 import up from './images/up.svg';
 import editSVG from './images/edit.svg';
+import repeatSVG from './images/repeat.svg'
 
 import {listsData, tasksData} from './tasks-data.js'
 import {displayLists, groupSort} from './sidebar.js';
@@ -284,7 +285,16 @@ function quickView() {
         else {taskItemRepeatValue.textContent = taskObject.repeat}
         taskItemRepeatValue.style.borderLeft = '2px solid #1c1c1c'
         taskItemRepeatValue.style.paddingLeft = '10px'
+        const editRepeat = document.createElement('img');
+        editRepeat.classList.add('edit-repeat')
+        editRepeat.src = repeatSVG
+        editRepeat.style.width = '1.35em'
         taskAttributeContainer.appendChild(taskItemRepeatValue);
+        taskItemRepeatValue.appendChild(editRepeat);
+        taskItemRepeatValue.style.display = 'flex'
+        taskItemRepeatValue.style.justifyContent = 'space-between'
+        taskItemRepeatValue.style.minGap = '5px'
+        editRepeat.addEventListener('click', changeRepeatInQuickView)
 
         const taskItemNote = document.createElement('p');
         taskItemNote.textContent = "Notes";
@@ -413,4 +423,151 @@ function editDateInQuickView() {
     currDateElement.textContent = editDateElement.value;
     currDateElement.appendChild(editDateElement);
     console.log(tasksData)
+}
+
+function changeRepeatInQuickView() {
+    document.addEventListener('click', handleClickOutsideForRepeat, true);
+    if (!document.querySelector('ul.repetetion-list')) {
+        const repetitionList = document.createElement('ul');
+        repetitionList.className = 'repetetion-list-quickview';
+        repetitionList.innerHTML = 
+            `<li>Daily</li>
+            <li>Weekdays</li>
+            <li>Weekly</li>
+            <li>Monthly</li>
+            <li>Yearly</li>
+            <li>Custom</li>
+            <li>Never</li>`
+        event.target.closest('p').replaceWith(repetitionList);
+        repetitionList.style.border = '2px solid #1c1c1c';
+        repetitionList.style.borderRadius = '8px';  
+        repetitionList.style.backgroundColor = '#3b3b3b'
+        repetitionList.style.listStyle = 'none'
+        repetitionList.style.width = 'min-content'
+        repetitionList.style.padding = '0px 0.5em'
+        repetitionList.querySelectorAll('li').forEach(option => {option.style.cursor = 'pointer'; option.addEventListener('click', changeRepeatValueInQuickView);});
+    }
+}
+
+function handleClickOutsideForRepeat() {
+    const repetitionList = document.querySelector('.repetetion-list-quickview');
+    const customList = document.querySelector('.custom-repetition-list');
+
+    if (!repetitionList?.contains(event.target)) {
+        const taskItemRepeatValue = document.createElement('p');
+        if (taskObject.repeat == undefined || taskObject.repeat == "") {taskItemRepeatValue.textContent = "None"} 
+        else {taskItemRepeatValue.textContent = taskObject.repeat}
+        taskItemRepeatValue.style.borderLeft = '2px solid #1c1c1c'
+        taskItemRepeatValue.style.paddingLeft = '10px'
+        const editRepeat = document.createElement('img');
+        editRepeat.classList.add('edit-repeat')
+        editRepeat.src = repeatSVG
+        editRepeat.style.width = '1.35em'
+        taskItemRepeatValue.appendChild(editRepeat);
+        taskItemRepeatValue.style.display = 'flex'
+        taskItemRepeatValue.style.justifyContent = 'space-between'
+        taskItemRepeatValue.style.minGap = '5px'
+        editRepeat.addEventListener('click', changeRepeatInQuickView)
+        repetitionList?.replaceWith(taskItemRepeatValue)
+        customList?.remove();
+        document.removeEventListener('click', handleClickOutsideForRepeat, true);
+    }
+}
+
+function changeRepeatValueInQuickView() {
+    const selected = event.target.closest('li').textContent
+    if (selected != 'Custom') {
+        document.removeEventListener('click', handleClickOutsideForRepeat, true);
+        taskObject.repeat = selected
+        const taskItemRepeatValue = document.createElement('p');
+        if (taskObject.repeat == undefined || taskObject.repeat == "") {taskItemRepeatValue.textContent = "None"} 
+        else {taskItemRepeatValue.textContent = taskObject.repeat}
+        taskItemRepeatValue.style.borderLeft = '2px solid #1c1c1c'
+        taskItemRepeatValue.style.paddingLeft = '10px'
+        const editRepeat = document.createElement('img');
+        editRepeat.classList.add('edit-repeat')
+        editRepeat.src = repeatSVG
+        editRepeat.style.width = '1.35em'
+        taskItemRepeatValue.appendChild(editRepeat);
+        taskItemRepeatValue.style.display = 'flex'
+        taskItemRepeatValue.style.justifyContent = 'space-between'
+        taskItemRepeatValue.style.minGap = '5px'
+        editRepeat.addEventListener('click', changeRepeatInQuickView)
+        document.querySelector('.repetetion-list-quickview')?.replaceWith(taskItemRepeatValue)
+    }
+    if (selected == 'Custom') {
+        document.removeEventListener('click', handleClickOutsideForRepeat, true);
+        const customRepetitionList = document.createElement('ul');
+        customRepetitionList.className = 'custom-repetetion-list-quickview';
+        customRepetitionList.innerHTML = `
+        <div style="border: 2px solid #1c1c1c; padding: 5px; border-radius: 8px;">
+        <p>Repeat Every...</p>
+        <div>
+            <input type="number" id="repeat-frequency-quickview" name="repeat-frequency-quickview" min="1" style"background-color: #3b3b3b;">
+            <select name="repeat" id="repeat-quickview" style"background-color: #3b3b3b;">
+                <option value="Days">Days</option>
+                <option value="Weeks">Weeks</option>
+                <option value="Months">Months</option>
+                <option value="Years">Years</option>
+            </select>
+        </div>
+        <div style="margin-top: 8px; display: flex; gap: 8px;"><button class="cancel-quickview" style="cursor:pointer">Cancel</button><button class="submit-quickview" style="cursor: pointer; background-color: #3b3b3b;">Submit</button></div>
+        </div>`
+        customRepetitionList.style.padding = '0px'
+        document.querySelector('.repetetion-list-quickview').replaceWith(customRepetitionList);
+        document.querySelector('.submit-quickview').addEventListener('click', customRepeatSelectedQuickview)
+        document.querySelector('.cancel-quickview').addEventListener('click', customRepeatSelectedQuickview)
+    }
+}
+
+function customRepeatSelectedQuickview() {
+    if (event.target.closest('button').textContent == 'Submit') {
+        taskObject.repeat = 'Every ' + document.getElementById('repeat-frequency-quickview').value + ' ' + document.getElementById('repeat-quickview').value
+    }
+    if (event.target.closest('button').textContent == 'Cancel') {}
+    const taskItemRepeatValue = document.createElement('p');
+    if (taskObject.repeat == undefined || taskObject.repeat == "") {taskItemRepeatValue.textContent = "None"} 
+    else {taskItemRepeatValue.textContent = taskObject.repeat}
+    taskItemRepeatValue.style.borderLeft = '2px solid #1c1c1c'
+    taskItemRepeatValue.style.paddingLeft = '10px'
+    const editRepeat = document.createElement('img');
+    editRepeat.classList.add('edit-repeat')
+    editRepeat.src = repeatSVG
+    editRepeat.style.width = '1.35em'
+    taskItemRepeatValue.appendChild(editRepeat);
+    taskItemRepeatValue.style.display = 'flex'
+    taskItemRepeatValue.style.justifyContent = 'space-between'
+    taskItemRepeatValue.style.minGap = '5px'
+    editRepeat.addEventListener('click', changeRepeatInQuickView)
+    document.querySelector('.custom-repetetion-list-quickview')?.replaceWith(taskItemRepeatValue)
+    document.removeEventListener('click', handleClickOutsideForRepeat, true)
+}
+
+
+function customRepeatSelected() {
+    if (event.target.closest('button').textContent == 'Submit') {
+        repeat = 'Every ' + document.getElementById('quantity').value + ' ' + document.getElementById('repeat').value
+    }
+    if (event.target.closest('button').textContent == 'Cancel') {
+        document.querySelector('.custom-repetetion-list')?.remove();
+        document.querySelector('.repetetion-list')?.remove();
+        document.removeEventListener('click', handleClickOutsideForRepeat, true)
+        document.querySelector('.custom-repetetion-list')?.remove();
+        document.querySelector('.repetetion-list')?.remove();
+        return
+    }
+    document.querySelector('#main').removeChild(document.querySelector('.custom-repetetion-list'))
+    if(document.querySelector('.selected-repetition')) {document.querySelector('#main > div.add-task-div').removeChild(document.querySelector('.selected-repetition'))}
+    const selectedRepetition = document.createElement('p')
+    selectedRepetition.textContent = repeat.substring(6);
+    selectedRepetition.classList.add('selected-repetition')
+    selectedRepetition.style.backgroundColor = '#3b3b3b'
+    selectedRepetition.style.alignContent  = 'center'
+    selectedRepetition.style.color = 'white'
+    selectedRepetition.style.whiteSpace = 'nowrap'
+    document.querySelector('div.add-task-div').insertBefore(selectedRepetition, document.querySelector('img.input-repeat'))
+    document.removeEventListener('click', handleClickOutsideForRepeat, true)
+
+    document.querySelector('.custom-repetetion-list')?.remove();
+    document.querySelector('.repetetion-list')?.remove();
 }

@@ -369,7 +369,7 @@ function repeatSelected() {
     if (selected == 'Custom') {
         document.removeEventListener('click', handleClickOutsideForRepeat, true);
         document.querySelector('#main').removeChild(document.querySelector('.repetetion-list'))
-        const customRepetitionList = document.createElement('ul');
+        const customRepetitionList = document.createElement('div');
         customRepetitionList.className = 'custom-repetetion-list';
         customRepetitionList.innerHTML = `
         <div style="border: 1px solid #3b3b3b; padding: 5px; border-radius: 8px">
@@ -389,6 +389,7 @@ function repeatSelected() {
         customRepetitionList.style.position = 'fixed'
         customRepetitionList.style.bottom = document.querySelector('div.add-task-div').clientHeight + 'px'
         customRepetitionList.style.right = `calc(5% + 0.5em + 20px)`;
+        customRepetitionList.style.width = 'fit-content'
         document.querySelector('.submit').addEventListener('click', customRepeatSelected)
         document.querySelector('.cancel').addEventListener('click', customRepeatSelected)
     }
@@ -402,11 +403,9 @@ function customRepeatSelected() {
         document.querySelector('.custom-repetetion-list')?.remove();
         document.querySelector('.repetetion-list')?.remove();
         document.removeEventListener('click', handleClickOutsideForRepeat, true)
-        document.querySelector('.custom-repetetion-list')?.remove();
-        document.querySelector('.repetetion-list')?.remove();
         return
     }
-    document.querySelector('#main').removeChild(document.querySelector('ul.custom-repetetion-list'))
+    document.querySelector('#main').removeChild(document.querySelector('.custom-repetetion-list'))
     if(document.querySelector('.selected-repetition')) {document.querySelector('#main > div.add-task-div').removeChild(document.querySelector('.selected-repetition'))}
     const selectedRepetition = document.createElement('p')
     selectedRepetition.textContent = repeat.substring(6);
