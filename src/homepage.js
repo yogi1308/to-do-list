@@ -432,7 +432,7 @@ function handleClickOutsideForRepeat(e) {
     }
 }
 
-function execCmd(command) {
+export function execCmd(command) {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
     
@@ -490,7 +490,7 @@ function execCmd(command) {
     }
 }
 
-function handleListCreation() {
+export function handleListCreation() {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
@@ -517,7 +517,7 @@ function handleListCreation() {
     selection.addRange(newRange);
 }
 
-function handleFileUpload(event) {
+export function handleFileUpload(event) {
     const file = event.target.files[0]; // Get the selected file
     if (!file) return;
 

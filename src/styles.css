@@ -138,12 +138,16 @@ body {
 .input-star, .input-repeat, .input-notes {background-color: #3b3b3b; cursor: pointer; padding-right: 5px;}
 
 .input-list {background-color: #3b3b3b; cursor: pointer;}
-#main > ul > div > div > p, .delete-icon, div.task-item-right > img.arrow, .edit-icon, .edit-priority, .edit-completed, .edit-repeat {cursor: pointer;}
+#main > ul > div > div > p, .delete-icon, div.task-item-right > img.arrow, .edit-icon, .edit-priority, .edit-completed, .edit-repeat, .edit-notes {cursor: pointer;}
 
 #main > ul > div {max-width: 50%}
 
 #main > ul > div::-webkit-scrollbar {
   display: none;
+}
+
+.edit-notes {
+  align-self: flex-start;
 }
 
 #repeat-frequency-quickview, #repeat-quickview, .cancel-quickview, .submit-quickview {
