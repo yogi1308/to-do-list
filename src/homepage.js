@@ -579,7 +579,8 @@ function inputNotesClicked() {
 
     notesEditor.style.marginTop = 'auto'
     notesEditor.style.zIndex = '1000'
-    notesEditor.style.backdropFilter = 'opaque'
+    notesEditor.style.opacity = '1';
+    notesEditor.style.backgroundColor = '#3b3b3b';
     notesEditor.style.backfaceVisibility = 'hidden'
     notesEditor.style.padding = '10px'
     notesEditor.style.border = '1px solid white'

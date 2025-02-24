@@ -616,10 +616,11 @@ function changeNotesInQuickView(event) {
 
     notesEditor.style.marginTop = 'auto'
     notesEditor.style.zIndex = '1000'
-    notesEditor.style.backdropFilter = 'opaque'
     notesEditor.style.backfaceVisibility = 'hidden'
     notesEditor.style.padding = '10px'
     notesEditor.style.border = '1px solid white'
+    notesEditor.style.opacity = '1';
+    notesEditor.style.backgroundColor = '#3b3b3b';
     notesEditor.focus()
 
     if (taskObject.notes != '') { document.querySelector('#editor').innerHTML = taskObject.notes }
