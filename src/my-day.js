@@ -6,7 +6,8 @@ export { displayTodayTasks,  isTaskScheduledForDate }
 
 function displayTodayTasks() {
     const today = new Date();
-    tasksData.forEach(task => {
+    const storedTasksData = JSON.parse(localStorage.getItem('tasksData')) || [];
+    storedTasksData.forEach(task => {
         if (task.date != undefined) {
             if (isTaskScheduledForDate(task, today)) {displayTask(task);}
         }

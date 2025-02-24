@@ -6,7 +6,7 @@ import star from './images/star.svg';
 import filledStar from './images/filled-star.svg';
 import completed from './images/completed.svg';
 import completedFilled from './images/completed-filled.svg';
-import { tasksData } from './tasks-data.js';
+import { tasksData, updateLocalStorage } from './tasks-data.js';
 import { view } from './sidebar.js';
 
 export { completionStatusChanged, importanceChanged, priorityChanged, deleteTask }
@@ -19,6 +19,7 @@ function completionStatusChanged() {
             else {task.completed = true; this.src = completedFilled; ;this.style.width = '1.35em'; this.style.paddingLeft = '2px'}
         }
     });
+    updateLocalStorage();
 }
 
 function importanceChanged() {
@@ -29,6 +30,7 @@ function importanceChanged() {
             else {task.important = true; this.src = filledStar;}
         }
     });
+    updateLocalStorage();
 }
 
 function priorityChanged(){
@@ -41,6 +43,7 @@ function priorityChanged(){
             else if (task.priority == 'High') {task.priority = ""; this.src = flag;}
         }
     });
+    updateLocalStorage();
 }
 
 function deleteTask() {
@@ -50,7 +53,9 @@ function deleteTask() {
     for (let i = 0; i < tasksData.length; i++) {
         if (tasksData[i].task == taskName && (tasksData[i].list == undefined || tasksData[i].list.name == taskList)) {
             tasksData.splice(i, 1);
+            updateLocalStorage();
             break
         }
     }
+    updateLocalStorage();
 }

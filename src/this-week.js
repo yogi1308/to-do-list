@@ -27,8 +27,8 @@ function sortTasksForWeekDates(today) {
     const thisWeek = getThisWeekDates(today);
     // Create a task container for each day of the week
     let weekTasks = thisWeek.map(date => new dateAndTask(date));
-    
-    tasksData.forEach(task => {
+    const storedTasksData = JSON.parse(localStorage.getItem('tasksData')) || [];
+    storedTasksData.forEach(task => {
       if (task.date !== undefined) {
         thisWeek.forEach(date => {
           if (isTaskScheduledForDate(task, date)) {

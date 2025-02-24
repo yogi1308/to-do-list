@@ -13,7 +13,7 @@ import editSVG from './images/edit.svg';
 import repeatSVG from './images/repeat.svg'
 import notesSVG from './images/notes.svg'
 
-import {listsData, tasksData} from './tasks-data.js'
+import {listsData, tasksData, updateLocalStorage} from './tasks-data.js'
 import {displayLists, groupSort} from './sidebar.js';
 import {execCmd, handleListCreation, handleFileUpload} from './homepage.js';
 
@@ -81,6 +81,8 @@ function displayTask(task) {
     taskList.appendChild(taskItem);
     main.appendChild(taskList);
 
+    updateLocalStorage()
+
     return taskItem
 }
 
@@ -104,7 +106,8 @@ function quickView() {
         ) {
         taskObject = tasks;
         break;
-    } else {
+    } 
+    else {
         const taskNameMatch = tasks.task === taskNameText;
         const importantMatch =
         (starIconSrc === filledStar && tasks.important === true) ||
@@ -327,6 +330,7 @@ function quickView() {
         const taskItem = displayTask(taskObject)
         item.replaceWith(taskItem)
     }
+    updateLocalStorage()
 }
 
 
@@ -347,6 +351,8 @@ function changeListNameInQuickView() {
     document.querySelector('#main').appendChild(listDropdownMenu);
     chooseList.querySelectorAll('img.vertical-dots').forEach(dot => {dot.remove();});
     chooseList.querySelectorAll('*').forEach(child => {const paragraph = child.querySelector('p');if (paragraph) {paragraph.addEventListener('click', listSelected);}});
+
+    updateLocalStorage()
 }
 
 function handleClickOutside(e) {
@@ -368,6 +374,8 @@ function handleClickOutside(e) {
         document.removeEventListener('click', handleClickOutside, true);
     }
     else {document.removeEventListener('click', handleClickOutside, true);}
+
+    updateLocalStorage()
 }
 
 function listSelected() {
@@ -389,6 +397,8 @@ function listSelected() {
     editList.addEventListener('click', changeListNameInQuickView)
     document.querySelector('#main > div.task-list > div > div:nth-child(2) > div').replaceWith(taskItemListValue)
     document.removeEventListener('click', handleClickOutside, true);
+
+    updateLocalStorage()
 }
 
 function changePriorityInQuickview() {
@@ -402,6 +412,8 @@ function changePriorityInQuickview() {
     else if (currPriority === 'High') {taskObject.priority = '';currPriorityElement.textContent = "None";editPriorityElement.src = flag;}
 
     currPriorityElement.appendChild(editPriorityElement);
+
+    updateLocalStorage()
 }
 
 function changeCompletionInQuickView() {
@@ -413,6 +425,8 @@ function changeCompletionInQuickView() {
     else if (currCompletion === 'true') {taskObject.completed = false;currCompletionElement.textContent = 'false';editCompletionElement.src = completed; editCompletionElement.style.width = '1.35em'}
 
     currCompletionElement.appendChild(editCompletionElement);
+
+    updateLocalStorage()
 }
 
 function changeImportanceInQuickview() {
@@ -424,6 +438,8 @@ function changeImportanceInQuickview() {
     else if (currImportance === 'true') {taskObject.important = false; currImportanceElement.textContent = 'false'; editImportanceElement.src = star}
 
     currImportanceElement.appendChild(editImportanceElement);
+
+    updateLocalStorage()
 }
 
 function editDateInQuickView() {
@@ -435,6 +451,8 @@ function editDateInQuickView() {
     currDateElement.textContent = editDateElement.value;
     currDateElement.appendChild(editDateElement);
     console.log(tasksData)
+
+    updateLocalStorage()
 }
 
 function changeRepeatInQuickView() {
@@ -459,6 +477,7 @@ function changeRepeatInQuickView() {
         repetitionList.style.padding = '0px 0.5em'
         repetitionList.querySelectorAll('li').forEach(option => {option.style.cursor = 'pointer'; option.addEventListener('click', changeRepeatValueInQuickView);});
     }
+    updateLocalStorage()
 }
 
 function handleClickOutsideForRepeat() {
@@ -484,6 +503,7 @@ function handleClickOutsideForRepeat() {
         customList?.remove();
         document.removeEventListener('click', handleClickOutsideForRepeat, true);
     }
+    updateLocalStorage()
 }
 
 function changeRepeatValueInQuickView() {
@@ -529,6 +549,8 @@ function changeRepeatValueInQuickView() {
         document.querySelector('.repetetion-list-quickview').replaceWith(customRepetitionList);
         document.querySelector('.submit-quickview').addEventListener('click', customRepeatSelectedQuickview)
         document.querySelector('.cancel-quickview').addEventListener('click', customRepeatSelectedQuickview)
+
+        updateLocalStorage()
     }
 }
 
@@ -553,6 +575,8 @@ function customRepeatSelectedQuickview() {
     editRepeat.addEventListener('click', changeRepeatInQuickView)
     document.querySelector('.custom-repetetion-list-quickview')?.replaceWith(taskItemRepeatValue)
     document.removeEventListener('click', handleClickOutsideForRepeat, true)
+
+    updateLocalStorage()
 }
 
 function changeNotesInQuickView(event) {
@@ -601,6 +625,8 @@ function changeNotesInQuickView(event) {
     if (taskObject.notes != '') { document.querySelector('#editor').innerHTML = taskObject.notes }
 
     document.addEventListener('click', handleClickOutsideForNotesInQuickview, true);
+
+    updateLocalStorage()
 }
 
 
@@ -627,4 +653,6 @@ function handleClickOutsideForNotesInQuickview(e) {
 
         document.removeEventListener('click', handleClickOutsideForNotesInQuickview, true);
     }
+
+    updateLocalStorage()
 }

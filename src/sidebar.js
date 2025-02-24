@@ -5,7 +5,7 @@ import myDay from './images/my-day.svg';
 import star from './images/star.svg';
 import completed from './images/completed.svg';
 import all from './images/all.svg'
-import { tasksData, lists, listsData} from './tasks-data.js';
+import { tasksData, lists, listsData, updateLocalStorage} from './tasks-data.js';
 import listIcon from './images/group.svg'
 import {header} from './homepage.js';
 import flag from './images/flag.svg';
@@ -76,6 +76,7 @@ function sidebarItems() {
             sidebarItemDiv.appendChild(dropdownIcon)
         }
     });
+    updateLocalStorage()
     displayLists()
     dispalyAddListsAndLabels()
 }
@@ -111,6 +112,7 @@ function displayLists() {
     })
     sidebar.appendChild(groupDiv);
     groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
+    updateLocalStorage()
     return groupDiv
 }
 
@@ -178,7 +180,8 @@ function choosePriorityDisplayList() {
 function displayPriorityTasks(event){
     let priorityType = event.target.closest('.priority-type').textContent
     document.querySelector('.task-list').textContent = '';
-    tasksData.forEach(task => {
+    const storedTasksData = JSON.parse(localStorage.getItem('tasksData')) || [];
+    storedTasksData.forEach(task => {
         if (task.priority == priorityType) {
             displayTask(task) ;
         }
@@ -206,6 +209,7 @@ function addList() {
     console.log(listsData)
     document.querySelector('#sidebar').removeChild(document.querySelector('.groupDiv'))
     document.querySelector('#sidebar').removeChild(document.querySelector('.sidebar-footer'))
+    updateLocalStorage()
     displayLists()
     dispalyAddListsAndLabels()
     let lastList = document.querySelector('div.groupDiv').lastChild.querySelector('p')
@@ -226,6 +230,7 @@ function addList() {
     };
     textarea.addEventListener("keypress", textarea.keypressHandler);    
     textarea.addEventListener("blur", setLatestListName)
+    updateLocalStorage()
 }
     
 
@@ -234,6 +239,7 @@ function setLatestListName(listSlashLabelName) {
     const baseTitle = textarea.value.trim();
     const keypressHandler = (event) => {
         if (event.key === 'Enter') {
+            updateLocalStorage()
             setLatestListName(listSlashLabelName);
         }
     };
@@ -252,6 +258,7 @@ function setLatestListName(listSlashLabelName) {
         newTitleElement.style.wordBreak = "break-word";
         textarea.replaceWith(newTitleElement);
         newTitleElement.addEventListener('click', groupSort)
+        updateLocalStorage()
     } else {
         // If the new title is empty, revert to the original title (assuming titleElement exists)
         const newTitleElement = document.createElement("p");
@@ -265,7 +272,9 @@ function setLatestListName(listSlashLabelName) {
         textarea.replaceWith(newTitleElement);
         newTitleElement.addEventListener('click', groupSort)
         listsData[listsData.length - 1].name = newTitle;
+        updateLocalStorage()
     }
+    updateLocalStorage()
 
 }
   
@@ -275,6 +284,7 @@ function verticalDotsClicked() {
         console.log('Match found'); 
         listDotsClicked(listSlashLabelName)
     }
+    updateLocalStorage()
 }
 
 function listDotsClicked(listSlashLabelName) {
@@ -297,10 +307,12 @@ function listDotsClicked(listSlashLabelName) {
     listOptionsUl.style.backgroundColor = '#1c1c1c'
     listOptionsUl.style.color = '#788cde'
     listOptionsUl.style.cursor = 'pointer'
+    updateLocalStorage()
     document.querySelector('.delete-list').addEventListener('click', () => deleteList(listSlashLabelName))
     document.querySelector('.delete-list-with-tasks').addEventListener('click', () => deleteListsWithTasks(listSlashLabelName))
     document.querySelector('.change-list-name').addEventListener('click', (e) => changeListName(e, listSlashLabelName))
     document.addEventListener('click', clickedOutsidelistOptionsUl, true)
+    updateLocalStorage()
 }
 
 function deleteList(listSlashLabelName) {
@@ -322,6 +334,7 @@ function deleteList(listSlashLabelName) {
     while (groupDiv.children.length > 1) {
         groupDiv.removeChild(groupDiv.lastChild);
     }
+    updateLocalStorage()
     displayLists()
     document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
 }
@@ -346,6 +359,7 @@ function deleteListsWithTasks(listSlashLabelName) {
     while (groupDiv.children.length > 1) {
         groupDiv.removeChild(groupDiv.lastChild);
     }
+    updateLocalStorage()
     displayLists()
     document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
 }
@@ -355,33 +369,80 @@ function clickedOutsidelistOptionsUl() {
     document.removeEventListener('click', clickedOutsidelistOptionsUl, true)
 }
 
-function changeListName(event, listSlashLabelName) {
-    const groupDiv = document.querySelector('div.groupDiv')
-    groupDiv.querySelectorAll('div.taskGroup').forEach(child => {
-        if (child.querySelector('p').textContent == listSlashLabelName) {
-            const textarea = document.createElement("textarea");
-            textarea.value = listSlashLabelName;
-            textarea.style.width = "100%";
-            textarea.style.height = "auto";
-            child.querySelector('p').replaceWith(textarea)
-            textarea.focus();
-            textarea.select();
-            textarea.style.backgroundColor = '#3b3b3b'
-            textarea.style.color = 'white'
-            textarea.keypressHandler = (event) => {
-                if (event.key === 'Enter') {
-                    setLatestListName(listSlashLabelName);
-                }
-            };
-            textarea.addEventListener("keypress", textarea.keypressHandler);    
-            textarea.addEventListener("blur", () => setLatestListName)
-        }})
-}
+function changeListName(event, originalName) {
+    const groupDiv = document.querySelector('div.groupDiv');
+    groupDiv.querySelectorAll('div.taskGroup').forEach((child, idx) => {
+      const pElement = child.querySelector('p');
+      if (pElement && pElement.textContent.trim() === originalName) {
+        // Create a textarea for editing
+        const textarea = document.createElement("textarea");
+        textarea.value = originalName;
+        textarea.style.width = "100%";
+        textarea.style.height = "auto";
+        textarea.style.backgroundColor = '#3b3b3b';
+        textarea.style.color = 'white';
+        // Replace the <p> with the textarea
+        pElement.replaceWith(textarea);
+        textarea.focus();
+        textarea.select();
+        
+        // Define the event handlers
+        function keypressHandler(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            // Remove the blur handler so it doesn’t fire next
+            textarea.removeEventListener("blur", blurHandler);
+            setLatestListNamefromDotsClicked(idx, originalName, textarea.value.trim());
+          }
+        }
+        
+        function blurHandler(e) {
+          // Remove the keypress handler to prevent double execution
+          textarea.removeEventListener("keypress", keypressHandler);
+          setLatestListNamefromDotsClicked(idx, originalName, textarea.value.trim());
+        }
+        
+        // Attach both event handlers
+        textarea.addEventListener("keypress", keypressHandler);
+        textarea.addEventListener("blur", blurHandler);
+      }
+    });
+    updateLocalStorage();
+  }
+  
+  function setLatestListNamefromDotsClicked(index, originalName, newName) {
+    const baseTitle = newName || originalName || 'Untitled List';
+    let newTitle = baseTitle;
+    let suffix = 1;
+    // Check for duplicate names among all lists except the one being renamed.
+    while (listsData.some((list, i) => i !== index && list.name === newTitle)) {
+      newTitle = `${baseTitle} (${suffix})`;
+      suffix++;
+    }
+    // Update the list name in memory.
+    listsData[index].name = newTitle;
+    
+    // Create a new <p> element for the updated name.
+    const newTitleElement = document.createElement("p");
+    newTitleElement.textContent = newTitle;
+    newTitleElement.style.wordBreak = "break-word";
+    newTitleElement.addEventListener('click', groupSort);
+    
+    // Replace the textarea with the new <p> element if it still exists.
+    const textarea = document.querySelector('textarea');
+    if (textarea && textarea.parentNode) {
+      textarea.replaceWith(newTitleElement);
+    }
+    
+    updateLocalStorage();
+  }
+  
 
 function searchTasks() {
     const search = document.querySelector('#search-bar').value;
     document.querySelector('.task-list').textContent = '';
-    tasksData.forEach(task => {
+    const storedTasksData = JSON.parse(localStorage.getItem('tasksData')) || [];
+    storedTasksData.forEach(task => {
         if (task.task.toLowerCase().includes(search.toLowerCase())) {
             displayTask(task);
         }

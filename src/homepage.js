@@ -1,6 +1,6 @@
 // delete, label, local save, note, edit tasks from quick view
 
-import { tasks, tasksData, listsData } from './tasks-data.js';
+import { tasks, tasksData, listsData, updateLocalStorage } from './tasks-data.js';
 import {displayTodayTasks} from './my-day.js'
 import {format} from 'date-fns'
 import sidebarIcon from './images/sidebar.svg'
@@ -122,6 +122,7 @@ function addTaskFunction(taskName) {
     const addTask = document.querySelector('#add-task');
     console.log(repeat)
     tasksData.push(tasks(addTask.value, priority, list, date, repeat, important, completed, notes));
+    updateLocalStorage()
     addTask.value = taskName;
     const taskList = document.querySelector('.task-list');
     const main = document.querySelector('#main');
