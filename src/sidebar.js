@@ -134,7 +134,7 @@ function chooseDisplay(item) {
     else if (item == 'Important') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.important) {displayTask(task);}});changeHeader(item, star); view = 'Important'}
     else if (item == 'Completed') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {if (task.completed) {displayTask(task);}});changeHeader(item, completed); view = 'Completed'}
     else if (item == 'All') {document.querySelector('.task-list').textContent = ''; tasksData.forEach(task => {displayTask(task);}); changeHeader(item, all); view = 'All'}
-    else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;const groupDiv = document.querySelector('.groupDiv');groupDiv.style.height = `calc(100vh - 2.5em${document.querySelector('.sidebar-list').clientHeight}px)`;}}
+    else if (item == 'Priority') {if (!priorityDisplayListView) {choosePriorityDisplayList(); priorityDisplayListView = true;} else {document.querySelector('.priority-types-list').remove(); priorityDisplayListView = false; document.querySelector('.dropdown-icon').src = down;document.querySelector('.groupDiv').style.height = `calc(100vh - ${document.querySelector('.sidebar-list').clientHeight}px - ${document.querySelector('.sidebar-footer').clientHeight}px`;}}
     else if (item == 'This Week') {document.querySelector('.task-list').textContent = ''; changeHeader(item, calender); displayWeekTasks(currentDate);view = 'This Week'}
     else if (item == 'This Month') {document.querySelector('.task-list').textContent = ''; changeHeader(item, monthCalender); view = 'This Month'; setPlusMinusMonthsToZero(); displayMonthTasks(currentDate);}
 }
@@ -172,9 +172,13 @@ function choosePriorityDisplayList() {
     sidebarList.appendChild(priorityTypesList);
     const dropdownIcon = document.querySelector('.dropdown-icon');
     dropdownIcon.src = up;
-
+    const sidebarListHeight = document.querySelector('.sidebar-list').clientHeight;
+    const sidebarFooterHeight = document.querySelector('.sidebar-footer').clientHeight;
+    
     const groupDiv = document.querySelector('.groupDiv');
-    groupDiv.style.height = `calc(100vh - 2.5em ${document.querySelector('.sidebar-list').clientHeight}px)`;
+    groupDiv.style.height = `calc(100vh - ${sidebarListHeight}px - ${sidebarFooterHeight}px`;
+    groupDiv.style.overflowY = 'auto'; // so it scrolls if content is taller
+    
 }
 
 function displayPriorityTasks(event){
@@ -340,28 +344,32 @@ function deleteList(listSlashLabelName) {
 }
 
 function deleteListsWithTasks(listSlashLabelName) {
-    for (let i = tasksData.length - 1; i >= 0; i--) {
-        if (tasksData[i].list.name === listSlashLabelName) {
-            tasksData.splice(i, 1);
-        }
+  // Remove tasks that have a list property matching the name.
+  for (let i = tasksData.length - 1; i >= 0; i--) {
+    if (tasksData[i].list && tasksData[i].list.name === listSlashLabelName) {
+      tasksData.splice(i, 1);
     }
-    
-    const indexList = listsData.findIndex(list => list.name === listSlashLabelName);
-
-    // If found, remove it using splice()
-    if (indexList !== -1) {
-        listsData.splice(indexList, 1);
-    }
-
-    console.log('Updated listsData:', listsData);
-    // listsAndLabelsData = listsAndLabelsData.filter(list => list.name !== listSlashLabelName)
-    const groupDiv = document.querySelector('div.groupDiv');
-    while (groupDiv.children.length > 1) {
-        groupDiv.removeChild(groupDiv.lastChild);
-    }
-    updateLocalStorage()
-    displayLists()
-    document.querySelector('#sidebar > div:nth-child(3)').replaceWith(document.querySelector('#sidebar > div:nth-child(5)'))
+  }
+  
+  // Find and remove the list from listsData.
+  const indexList = listsData.findIndex(list => list.name === listSlashLabelName);
+  if (indexList !== -1) {
+    listsData.splice(indexList, 1);
+  }
+  
+  console.log('Updated listsData:', listsData);
+  
+  // Clear and re-display the group container.
+  const groupDiv = document.querySelector('div.groupDiv');
+  while (groupDiv.children.length > 1) {
+    groupDiv.removeChild(groupDiv.lastChild);
+  }
+  
+  updateLocalStorage();
+  displayLists();
+  document.querySelector('#sidebar > div:nth-child(3)').replaceWith(
+    document.querySelector('#sidebar > div:nth-child(5)')
+  );
 }
 
 function clickedOutsidelistOptionsUl() {
